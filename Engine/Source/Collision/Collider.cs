@@ -25,6 +25,13 @@ public struct Collider {
 		Height = height;
 	}
 
+	public Collider(Rectangle rect) {
+		X = rect.X;
+		Y = rect.Y;
+		Width = rect.Width;
+		Height = rect.Height;
+	}
+
 	// AABB
 	public readonly bool Intersects(Collider other) {
 		return X < other.X + other.Width &&

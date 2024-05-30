@@ -11,6 +11,8 @@ public static class CollisionManager {
 	public static int GridWidth { get; private set; }
 	public static int GridHeight { get; private set; }
 	public static int CellSize { get; private set; }
+	public static int MaxX => GridWidth * CellSize;
+	public static int MaxY => GridHeight * CellSize;
 
 	private static List<CollisionCmp>[,] collisionMap;
 	private static List<CollisionCmp> collisionCmps;
@@ -101,6 +103,10 @@ public static class CollisionManager {
 		}
 
 		return collisions;
+	}
+
+	public static bool IsOutOfBounds(Collider c) {
+		return c.X < 0 || c.Y < 0 || c.BottomRight.X >= MaxX || c.BottomRight.Y >= MaxY;
 	}
 
 	// OPTIMIZE: maybe we'll need to optimize how collision differences are stored and calculated

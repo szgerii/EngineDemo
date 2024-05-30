@@ -64,7 +64,7 @@ public class CollisionCmp : Component {
 			movedInPrevStep = false;
 
 			tempColl += stepX;
-			if (!CollisionManager.Collides(tempColl, this)) {
+			if (!CollisionManager.IsOutOfBounds(tempColl) && !CollisionManager.Collides(tempColl, this)) {
 				Owner.Position += stepX;
 				sum += stepX;
 				movedInPrevStep = true;
@@ -73,7 +73,7 @@ public class CollisionCmp : Component {
 			}
 
 			tempColl += stepY;
-			if (!CollisionManager.Collides(tempColl, this)) {
+			if (!CollisionManager.IsOutOfBounds(tempColl) && !CollisionManager.Collides(tempColl, this)) {
 				Owner.Position += stepY;
 				sum += stepY;
 				movedInPrevStep = true;

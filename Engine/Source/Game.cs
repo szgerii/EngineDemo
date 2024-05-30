@@ -37,7 +37,7 @@ public class Game : Microsoft.Xna.Framework.Game {
 		Content.RootDirectory = "Content";
 
 		DisplayManager.Init();
-		DisplayManager.SetResolution(640, 360);
+		DisplayManager.SetResolution(1280, 720);
 		RenderTarget = new RenderTarget2D(GraphicsDevice, 640, 360);
 
 		base.Initialize();

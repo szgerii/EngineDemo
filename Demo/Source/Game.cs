@@ -4,16 +4,19 @@ using Engine.Input;
 using Demo.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Engine.Graphics;
 
 namespace Demo;
 
 public class Game : Engine.Game {
 	protected override void Initialize() {
 		base.Initialize();
-
+		//DisplayManager.SetResolution(1920, 1080);
+		//DisplayManager.SetWindowType(WindowType.FULL_SCREEN);
 		InputSetup();
 		GameScene scn = new();
 		SceneManager.Load(scn);
+		scn.LoadMap("desert");
 		DebugMode.Enable();
 	}
 
@@ -37,7 +40,6 @@ public class Game : Engine.Game {
 
 		InputManager.Keyboard.OnPressed(Keys.V, () => DebugMode.ToggleFeature("coll-check-areas"));
 		InputManager.Keyboard.OnPressed(Keys.C, () => DebugMode.ToggleFeature("coll-draw"));
-		InputManager.Keyboard.OnPressed(Keys.G, () => DebugMode.ToggleFeature("map-grid"));
-		InputManager.Keyboard.OnPressed(Keys.R, () => DebugMode.ToggleFeature("generate-level"));
+		InputManager.Keyboard.OnPressed(Keys.G, () => DebugMode.ToggleFeature("draw-grid"));
 	}
 }
