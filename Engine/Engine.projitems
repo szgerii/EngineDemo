@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6efba8a9-a407-4029-bdd0-651d22a87386</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Engine</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\Collider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Components\ColliderCollectionCmp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\CollisionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Graphics\DisplayManager.cs" />
+    <Compile Include="..\Engine\source\debug\DebugMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)source\debug\DebugFeature.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Objects\TileMap.cs" />
+    <Compile Include="..\Engine\Source\Collision\CollisionTags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\ComponentHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Component.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Components\AnimatedSpriteCmp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Components\CollisionCmp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Components\DirectionalAnimationCmp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Components\SpriteCmp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Game.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\GameObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Interfaces\IDrawable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Interfaces\IUpdatable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\AudioManager.cs" />
+    <Compile Include="..\Engine\Source\Audio\Types\AudioSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Types\ParallelAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Types\SerialAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Types\StreamedAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Types\TextToSpeechAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Bus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\Effects.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\BassBoostEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\DownSampleEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\EchoEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\Effect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\FilterEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\FreeverbEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\FX\RobotizeEffect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\IPausableAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Audio\ISeekableAudio.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Input\Actions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Input\GamePad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Input\InputManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Input\Keyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Input\Mouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Scenes\SceneManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Objects\Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Scenes\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Vendor\soloud.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
+    <None Include="$(MSBuildThisFileDirectory)Vendor\soloud_x64.dll" />
+    <None Include="$(MSBuildThisFileDirectory)Vendor\soloud_x86.dll" />
+    <ContentWithTargetPath Include="$(MSBuildThisFileDirectory)Vendor/soloud_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>win32/soloud.dll</TargetPath>
+    </ContentWithTargetPath>
+    <ContentWithTargetPath Include="$(MSBuildThisFileDirectory)Vendor/soloud_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>win64/soloud.dll</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Source\Audio\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Source\Debug\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Source\Components\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Source\Objects\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Source\Scenes\" />
+  </ItemGroup>
+</Project>
