@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Engine.Components;
 
+// TODO: global collision events
 public class ColliderCollectionCmp : Component {
 	public CollisionTags DefaultTag { get; set; }
 	public CollisionTags DefaultTargets { get; set; }

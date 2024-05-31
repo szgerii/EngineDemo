@@ -4,6 +4,7 @@ using Engine.Collision;
 using Engine.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Demo.Components;
 
 namespace Demo.Objects;
 
@@ -16,10 +17,16 @@ public class Player : GameObject {
 	private readonly ColliderCollectionCmp hitboxes;
 
 	public Player(Vector2 pos) : base(pos) {
+		// player collider
 		collCmp = new CollisionCmp(8, 24, 16, 8);
 		collCmp.Tags = CollisionTags.Player;
 		collCmp.Targets = CollisionTags.World;
 		Attach(collCmp);
+
+		// sets up hitboxes cmp
+		hitboxes = new ColliderCollectionCmp();
+		hitboxes.DefaultTargets = CollisionTags.Damageable;
+		Attach(hitboxes);
 
 		AnimatedSpriteCmp sprite = new(Game.ContentManager.Load<Texture2D>("assets/sprites/entities/player"), 3, 4, 10);
 		sprite.LayerDepth = 0.5f;
@@ -43,10 +50,8 @@ public class Player : GameObject {
 		dirAnimCmp = new DirectionalAnimationCmp();
 		Attach(dirAnimCmp);
 
-		// sets up hitboxes cmp
-		hitboxes = new ColliderCollectionCmp();
-		hitboxes.DefaultTargets = CollisionTags.Damageable;
-		Attach(hitboxes);
+		HealthCmp healthCmp = new HealthCmp(10);
+		Attach(healthCmp);
 
 		Instance = this;
 	}

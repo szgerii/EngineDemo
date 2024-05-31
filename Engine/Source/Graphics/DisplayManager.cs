@@ -123,7 +123,7 @@ public static class DisplayManager {
 		foreach (DisplayMode mode in supportedResolutions) {
 			if (mode.Width == width && mode.Height == height) {
 				SetResolution(mode, apply);
-				break;
+				return;
 			}
 		}
 

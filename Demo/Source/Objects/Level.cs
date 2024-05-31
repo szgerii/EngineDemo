@@ -1,3 +1,4 @@
+using Demo.Components;
 using Demo.Objects;
 using Engine;
 using Engine.Collision;
@@ -117,6 +118,12 @@ public class Level : GameObject {
 							}
 						}
 
+						// destroyable
+						if (tile != null && tile.properties.Any(e => e.name == "destroyable" && e.value == "true")) {
+							HealthCmp healthCmp = new HealthCmp(3);
+							tileObj.Attach(healthCmp);
+						}
+
 						Game.AddObject(tileObj);
 					}
 				}
@@ -126,6 +133,19 @@ public class Level : GameObject {
 				Texture2D layerTex = new(Game.Graphics.GraphicsDevice, MapWidth * TileSize, MapHeight * TileSize);
 				layerTex.SetData(layerColorData);
 				staticLayers.Add((layerDepth, layerTex));
+			}
+		}
+
+		TiledLayer[] objectLayers = map.Layers.Where(e => e.type == TiledLayerType.ObjectLayer).ToArray();
+		foreach (TiledLayer layer in objectLayers) {
+			foreach (TiledObject obj in layer.objects) {
+				if (obj.name == "player") {
+					Player player = new Player(new Vector2(obj.x, obj.y));
+					Game.AddObject(player);
+
+					Camera.Active = new Camera(player, new Rectangle(0, 0, MapWidth * TileSize, MapHeight * TileSize));
+					Game.AddObject(Camera.Active);
+				}
 			}
 		}
 

@@ -61,6 +61,18 @@ public class ComponentHandler {
 		return null;
 	}
 
+	public bool GetComponent<T>(out T component) where T : Component {
+		foreach (Component cmp in components) {
+			if (cmp.GetType().Equals(typeof(T))) {
+				component = (T)cmp;
+				return true;
+			}
+		}
+
+		component = null;
+		return false;
+	}
+
 	public bool HasComponent<T>() where T : Component => GetComponent<T>() != null;
 
 	public void LoadComponents() {

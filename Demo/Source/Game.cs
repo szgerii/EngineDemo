@@ -5,14 +5,29 @@ using Demo.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Engine.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using Engine;
+using Demo.Components;
 
 namespace Demo;
 
 public class Game : Engine.Game {
+	static Game() {
+		DebugMode.AddFeature(new ExecutedDebugFeature("toggle-fullscreen", () => {
+			if (DisplayManager.WindowType == WindowType.FULL_SCREEN) {
+				DisplayManager.SetWindowType(WindowType.WINDOWED, false);
+				DisplayManager.SetResolution(1280, 720, false);
+			} else {
+				DisplayManager.SetWindowType(WindowType.FULL_SCREEN, false);
+				DisplayMode nativeRes = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+				DisplayManager.SetResolution(nativeRes.Width, nativeRes.Height, false);
+			}
+			DisplayManager.ApplyChanges();
+		}));
+	}
+
 	protected override void Initialize() {
 		base.Initialize();
-		//DisplayManager.SetResolution(1920, 1080);
-		//DisplayManager.SetWindowType(WindowType.FULL_SCREEN);
 		InputSetup();
 		GameScene scn = new();
 		SceneManager.Load(scn);
@@ -38,8 +53,25 @@ public class Game : Engine.Game {
 		InputManager.Actions.Register("left", new InputAction(keys: new[] { Keys.A, Keys.Left }));
 		InputManager.Actions.Register("right", new InputAction(keys: new[] { Keys.D, Keys.Right }));
 
+		// debug
 		InputManager.Keyboard.OnPressed(Keys.V, () => DebugMode.ToggleFeature("coll-check-areas"));
-		InputManager.Keyboard.OnPressed(Keys.C, () => DebugMode.ToggleFeature("coll-draw"));
+		InputManager.Keyboard.OnPressed(Keys.C, () => DebugMode.ToggleFeature("coll-draw"));		
 		InputManager.Keyboard.OnPressed(Keys.G, () => DebugMode.ToggleFeature("draw-grid"));
+		InputManager.Keyboard.OnPressed(Keys.F, () => DebugMode.Execute("toggle-fullscreen"));
+		InputManager.Keyboard.OnPressed(Keys.H, () => DebugMode.ToggleFeature("draw-health"));
+		InputManager.Keyboard.OnPressed(Keys.X, () => {
+			foreach (GameObject obj in GameScene.Active.GameObjects) {
+				if (obj.GetComponent(out HealthCmp h)) {
+					h.Health -= 1;
+				}
+			}
+		});
+		InputManager.Keyboard.OnPressed(Keys.Y, () => {
+			foreach (GameObject obj in GameScene.Active.GameObjects) {
+				if (obj.GetComponent(out HealthCmp h)) {
+					h.Health += 1;
+				}
+			}
+		});
 	}
 }

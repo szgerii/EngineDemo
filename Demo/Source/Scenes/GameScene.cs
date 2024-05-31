@@ -1,7 +1,5 @@
 ﻿using Engine.Scenes;
 using Engine.Collision;
-using Engine.Objects;
-using Demo.Objects;
 using Microsoft.Xna.Framework;
 using System;
 using Engine.Debug;
@@ -15,12 +13,6 @@ public class GameScene : Scene {
 
 	static GameScene() {
 		DebugMode.AddFeature(new LoopedDebugFeature("draw-grid", (object _, GameTime _) => Active?.CurrentLevel.DrawGrid(), GameLoopStage.POST_DRAW));
-	}
-
-	public GameScene() { }
-
-	public override void Load() {
-		base.Load();
 	}
 
 	public override void Unload() {
@@ -45,11 +37,5 @@ public class GameScene : Scene {
 	private void InitMap() {
 		CollisionManager.Init(CurrentLevel.MapWidth, CurrentLevel.MapHeight, CurrentLevel.TileSize);
 		PostUpdate += CollisionManager.PostUpdate;
-
-		Player player = new Player(Vector2.One * 150);
-		AddObject(player);
-
-		Camera.Active = new Camera(player, new Rectangle(0, 0, CurrentLevel.MapWidth * CurrentLevel.TileSize, CurrentLevel.MapHeight * CurrentLevel.TileSize));
-		AddObject(Camera.Active);
 	}
 }

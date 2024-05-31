@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.9" tiledversion="1.9.2" name="desert_tileset" tilewidth="32" tileheight="32" tilecount="48" columns="8">
+<tileset version="1.10" tiledversion="1.10.2" name="desert_tileset" tilewidth="32" tileheight="32" tilecount="48" columns="8">
  <image source="desert_tileset.png" width="256" height="192"/>
  <tile id="30">
   <objectgroup draworder="index" id="2">
@@ -13,7 +13,7 @@
  </tile>
  <tile id="37">
   <properties>
-   <property name="damageable" type="bool" value="true"/>
+   <property name="destroyable" type="bool" value="true"/>
   </properties>
   <objectgroup draworder="index" id="2">
    <object id="2" x="7.3349" y="13.6136" width="18.4211" height="16.0455"/>
@@ -21,7 +21,7 @@
  </tile>
  <tile id="38">
   <properties>
-   <property name="damageable" type="bool" value="true"/>
+   <property name="destroyable" type="bool" value="true"/>
   </properties>
   <objectgroup draworder="index" id="2">
    <object id="2" x="8.60763" y="12.8863" width="17.3302" height="13.6819"/>
@@ -29,7 +29,7 @@
  </tile>
  <tile id="39">
   <properties>
-   <property name="damageable" type="bool" value="true"/>
+   <property name="destroyable" type="bool" value="true"/>
   </properties>
   <objectgroup draworder="index" id="2">
    <object id="1" x="6.73924" y="13.6818" width="18.4211" height="16.0455"/>
