@@ -2,6 +2,7 @@
 using Engine.Scenes;
 using Engine.Input;
 using Engine.Graphics;
+using Engine.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,6 +47,9 @@ public class Game : Microsoft.Xna.Framework.Game {
 	protected override void LoadContent() {
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 		SpriteBatch = _spriteBatch;
+
+		TextRenderer.Init("assets/shaders/BasicText");
+		BoxRenderer.Init("assets/shaders/Box");
 	}
 
 	protected override void Update(GameTime gameTime) {
@@ -65,6 +69,9 @@ public class Game : Microsoft.Xna.Framework.Game {
 
 	protected override void Draw(GameTime gameTime) {
 		float scale = Graphics.PreferredBackBufferHeight / (float)RenderTarget.Height;
+
+		TextRenderer.Render();
+		BoxRenderer.Render();
 		
 		GraphicsDevice.SetRenderTarget(RenderTarget);
 		GraphicsDevice.Clear(Color.Black);

@@ -15,6 +15,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\Collider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Components\ColliderCollectionCmp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\CollisionManager.cs" />
+    <Compile Include="..\Engine\source\debug\PerformanceCalculator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\AdvancedColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\AtlasLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\BoxElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\BoxRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Font.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\TextElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\TextRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Graphics\DisplayManager.cs" />
     <Compile Include="..\Engine\source\debug\DebugMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)source\debug\DebugFeature.cs" />
@@ -59,6 +67,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Vendor\soloud.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Content\assets\shaders\BasicText.fx" />
+    <None Include="$(MSBuildThisFileDirectory)Content\assets\shaders\Box.fx" />
     <None Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />
     <None Include="$(MSBuildThisFileDirectory)Vendor\soloud_x64.dll" />
     <None Include="$(MSBuildThisFileDirectory)Vendor\soloud_x86.dll" />

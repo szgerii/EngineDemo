@@ -13,3 +13,14 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin assets/shaders/BasicText.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:assets/shaders/BasicText.fx
+
+#begin assets/shaders/Box.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:assets/shaders/Box.fx
