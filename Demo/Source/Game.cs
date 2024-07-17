@@ -3,7 +3,7 @@ using Engine.Scenes;
 using Engine.Debug;
 using Engine.Input;
 using Engine.Graphics;
-using Engine.UI;
+using Engine.UI.Core;
 using Demo.Scenes;
 using Demo.Components;
 using Microsoft.Xna.Framework;

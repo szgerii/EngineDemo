@@ -3,6 +3,7 @@ using Engine.Scenes;
 using Engine.Input;
 using Engine.Graphics;
 using Engine.UI;
+using Engine.UI.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,7 +19,9 @@ public class Game : Microsoft.Xna.Framework.Game {
 
 	#region SHORTHANDS
 	public static void AddObject(GameObject obj) => SceneManager.Active.AddObject(obj);
+	public static void AddObject(UIObject obj) => SceneManager.Active.AddObject(obj);
 	public static void RemoveObject(GameObject obj) => SceneManager.Active.RemoveObject(obj);
+	public static void RemoveObject(UIObject obj) => SceneManager.Active.RemoveObject(obj);
 	#endregion
 
 	protected GraphicsDeviceManager _graphics;
@@ -63,6 +66,7 @@ public class Game : Microsoft.Xna.Framework.Game {
 		SceneManager.Active.PerformObjectAdditions();
 
 		SceneManager.Active.Update(gameTime);
+		SceneManager.Active.UpdateUI(gameTime);
 
 		base.Update(gameTime);
 	}
@@ -83,8 +87,9 @@ public class Game : Microsoft.Xna.Framework.Game {
 		GraphicsDevice.SetRenderTarget(null);
 		GraphicsDevice.Clear(Color.Black);
 
-		SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-		SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+		SpriteBatch.Begin(sortMode : SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
+		SceneManager.Active.DrawUI(gameTime);
+		SpriteBatch.Draw(RenderTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 1);
 		SpriteBatch.End();
 
 		base.Draw(gameTime);

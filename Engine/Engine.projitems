@@ -15,14 +15,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\Collider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Components\ColliderCollectionCmp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Collision\CollisionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)source\ui\TextBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)source\ui\UIObject.cs" />
     <Compile Include="..\Engine\source\debug\PerformanceCalculator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\AdvancedColor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\AtlasLayout.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\BoxElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\BoxRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Font.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\TextElement.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\TextRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\AdvancedColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\AtlasLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\BoxElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\BoxRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\Font.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\TextElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Source\UI\Core\TextRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Source\Graphics\DisplayManager.cs" />
     <Compile Include="..\Engine\source\debug\DebugMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)source\debug\DebugFeature.cs" />
@@ -87,5 +89,6 @@
     <Folder Include="$(MSBuildThisFileDirectory)Source\Components\" />
     <Folder Include="$(MSBuildThisFileDirectory)Source\Objects\" />
     <Folder Include="$(MSBuildThisFileDirectory)Source\Scenes\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Source\UI\Core\" />
   </ItemGroup>
 </Project>

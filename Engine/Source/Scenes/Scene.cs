@@ -1,22 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine.UI;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Engine.Scenes;
 
 public class Scene : IUpdatable, IDrawable {
-	public event EventHandler<GameTime> PreUpdate, PostUpdate;
-	public event EventHandler<GameTime> PreDraw, PostDraw;
+	public event EventHandler<GameTime> PreUpdate, PostUpdate, PreDraw, PostDraw;
 
 	public bool Loaded { get; protected set; } = false;
 
 	public List<GameObject> GameObjects { get; protected set; } = new List<GameObject>();
+	public List<UIObject> UIObjects { get; protected set; } = new List<UIObject>();
 
-	private Queue<GameObject> objAddBuffer = new Queue<GameObject>();
-	private Queue<GameObject> objRemoveBuffer = new Queue<GameObject>();
+	private readonly Queue<GameObject> objAddBuffer = new();
+	private readonly Queue<GameObject> objRemoveBuffer = new();
 
 	public virtual void Load() {
 		foreach (GameObject obj in GameObjects) {
+			obj.Load();
+		}
+
+		foreach (UIObject obj in UIObjects) {
 			obj.Load();
 		}
 
@@ -25,6 +30,10 @@ public class Scene : IUpdatable, IDrawable {
 
 	public virtual void Unload() {
 		foreach (GameObject obj in GameObjects) {
+			obj.Unload();
+		}
+
+		foreach (UIObject obj in UIObjects) {
 			obj.Unload();
 		}
 
@@ -41,6 +50,12 @@ public class Scene : IUpdatable, IDrawable {
 		PostUpdate?.Invoke(null, gameTime);
 	}
 
+	public virtual void UpdateUI(GameTime gameTime) {
+		foreach (UIObject obj in UIObjects) {
+			obj.Update(gameTime);
+		}
+	}
+
 	public virtual void Draw(GameTime gameTime) {
 		PreDraw?.Invoke(null, gameTime);
 
@@ -51,11 +66,24 @@ public class Scene : IUpdatable, IDrawable {
 		PostDraw?.Invoke(null, gameTime);
 	}
 
+	public virtual void DrawUI(GameTime gameTime) {
+		foreach (UIObject obj in UIObjects) {
+			obj.Draw(gameTime);
+		}
+	}
+
 	public virtual void AddObject(GameObject obj) {
 		if (Loaded) {
 			objAddBuffer.Enqueue(obj);
 		} else {
 			GameObjects.Add(obj);
+		}
+	}
+	public virtual void AddObject(UIObject obj) {
+		UIObjects.Add(obj);
+
+		if (Loaded) {
+			obj.Load();
 		}
 	}
 
@@ -65,6 +93,14 @@ public class Scene : IUpdatable, IDrawable {
 		} else {
 			GameObjects.Remove(obj);
 		}
+	}
+
+	public virtual void RemoveObject(UIObject obj) {
+		if (Loaded) {
+			obj.Unload();
+		}
+
+		UIObjects.Remove(obj);
 	}
 
 	public virtual void PerformObjectAdditions() {

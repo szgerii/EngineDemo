@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
-namespace Engine.UI;
+namespace Engine.UI.Core;
 
 static class BoxRenderer {
 	private static Effect boxEffect;

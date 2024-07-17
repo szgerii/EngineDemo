@@ -3,6 +3,8 @@ using Engine.Collision;
 using Microsoft.Xna.Framework;
 using System;
 using Engine.Debug;
+using Engine.UI;
+using Engine.UI.Core;
 
 namespace Demo.Scenes;
 

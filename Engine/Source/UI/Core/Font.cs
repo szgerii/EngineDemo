@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace Engine.UI;
+namespace Engine.UI.Core;
 
 /// <summary>
 /// Stores information associated with a specific font

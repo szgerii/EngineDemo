@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace Engine.UI;
+namespace Engine.UI.Core;
 
 public class BoxElement {
 	public bool NeedsRedraw { get; set; } = true;

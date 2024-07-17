@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Engine.UI;
+namespace Engine.UI.Core;
 
 /// <summary>
 /// The direction of a gradient

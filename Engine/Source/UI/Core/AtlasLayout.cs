@@ -1,4 +1,4 @@
-﻿namespace Engine.UI;
+﻿namespace Engine.UI.Core;
 
 /// <summary>
 /// Objects needed for JSON deserialization

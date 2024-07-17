@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
-namespace Engine.UI;
+namespace Engine.UI.Core;
 
 public static class TextRenderer {
 	private static Dictionary<string, Font> fonts = new Dictionary<string, Font>();
