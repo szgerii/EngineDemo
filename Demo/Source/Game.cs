@@ -92,6 +92,9 @@ public class Game : Engine.Game {
 		InputManager.Actions.Register("down", new InputAction(keys: new[] { Keys.S, Keys.Down }));
 		InputManager.Actions.Register("left", new InputAction(keys: new[] { Keys.A, Keys.Left }));
 		InputManager.Actions.Register("right", new InputAction(keys: new[] { Keys.D, Keys.Right }));
+		InputManager.Actions.Register("increase-zoom", new InputAction(keys: new[] { Keys.O }));
+		InputManager.Actions.Register("decrease-zoom", new InputAction(keys: new[] { Keys.I }));
+		InputManager.Actions.Register("reset-zoom", new InputAction(keys: new[] { Keys.NumPad0 }));
 
 		// debug
 		InputManager.Keyboard.OnPressed(Keys.V, () => DebugMode.ToggleFeature("coll-check-areas"));

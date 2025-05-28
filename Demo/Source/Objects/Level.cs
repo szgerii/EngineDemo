@@ -3,9 +3,12 @@ using Demo.Objects;
 using Engine;
 using Engine.Collision;
 using Engine.Components;
+using Engine.Graphics.Stubs.Texture;
+using Engine.Helpers;
 using Engine.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Safari.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,7 +105,7 @@ public class Level : GameObject {
 							}
 						}
 
-						Tile tileObj = new Tile(new Vector2(tileX, tileY), tileTex, ySortOffset: ySortOffset);
+						Tile tileObj = new(new Vector2(tileX, tileY), new Texture2DAdapter(tileTex), ySortOffset: ySortOffset);
 
 						// collision
 						TiledTile tile = map.GetTiledTile(mapTileset, tileset, gid);
@@ -110,7 +113,7 @@ public class Level : GameObject {
 							ColliderCollectionCmp collCmp = new();
 							tileObj.Attach(collCmp);
 							foreach (TiledObject obj in tile.objects) {
-								Collider bounds = new Collider(Utils.Round(obj.x), Utils.Round(obj.y), Utils.Round(obj.width), Utils.Round(obj.height));
+								Vectangle bounds = new(Utils.Round(obj.x), Utils.Round(obj.y), Utils.Round(obj.width), Utils.Round(obj.height));
 								CollisionCmp collider = new(bounds) {
 									Tags = CollisionTags.World
 								};
@@ -143,8 +146,15 @@ public class Level : GameObject {
 					Player player = new Player(new Vector2(obj.x, obj.y));
 					Game.AddObject(player);
 
-					Camera.Active = new Camera(player, new Rectangle(0, 0, MapWidth * TileSize, MapHeight * TileSize));
-					Game.AddObject(Camera.Active);
+					Rectangle maxBounds = Rectangle.Empty;
+					foreach ((_, Texture2D tex) in staticLayers) {
+						if (tex.Bounds.Width * tex.Bounds.Height > maxBounds.Width * maxBounds.Height) {
+							maxBounds = tex.Bounds;
+						}
+					}
+
+					CameraControllerCmp controller = new(maxBounds, player);
+					Camera.Active.Attach(controller);
 				}
 			}
 		}
@@ -153,9 +163,8 @@ public class Level : GameObject {
 	}
 
 	public override void Draw(GameTime gameTime) {
-		Rectangle srcRect = new Rectangle(Camera.Active.Position.ToPoint(), Camera.Active.ScreenSize);
 		foreach ((float depth, Texture2D tex) in staticLayers) {
-			Game.SpriteBatch.Draw(tex, Vector2.Zero, srcRect, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, depth);
+			Game.SpriteBatch.Draw(tex, Vector2.Zero, tex.Bounds, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, depth);
         }
 
         base.Draw(gameTime);

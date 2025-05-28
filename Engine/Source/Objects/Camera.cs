@@ -1,38 +1,39 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine.Helpers;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace Engine.Objects;
 
 public class Camera : GameObject {
-	public static Camera Active { get; set; }
+	public static Camera? Active { get; set; }
 
-	public Point ScreenSize => new Point(Game.RenderTarget.Width, Game.RenderTarget.Height);
-	public int ScreenWidth => ScreenSize.X;
-	public int ScreenHeight => ScreenSize.Y;
+	public float Zoom { get; set; } = 1.0f;
 
-	/// <summary>
-	/// The min and max values the camera's position is allowed to take
-	/// </summary>
-	public Rectangle? Bounds { get; set; }
-
-	/// <summary>
-	/// The object the camera should be following
-	/// </summary>
-	public GameObject Target { get; set; }
-
-	public Camera(GameObject target = null, Rectangle? bounds = null, Vector2? position = null) : base(position ?? Vector2.Zero) {
-		Bounds = bounds;
-		Target = target;
+	private float rotation = 0.0f;
+	public float Rotation {
+		get => rotation;
+		set {
+			rotation = value % (float)(2 * Math.PI);
+		}
 	}
 
-	public override void Update(GameTime gameTime) {
-		if (Target != null) {
-			Position = Target.Position - new Vector2(ScreenSize.X, ScreenSize.Y) / 2;
-		}
+	public Matrix TransformMatrix { get; private set; }
 
-		if (Bounds != null) {
-			Point minPos = Bounds.Value.Location;
-			Point maxPos = new Point(Bounds.Value.Right, Bounds.Value.Bottom) - ScreenSize;
-			Position = Vector2.Clamp(Position, minPos.ToVector2(), maxPos.ToVector2());
-		}
+	public Point ScreenSize => Game.RenderTarget!.Bounds.Size;
+	public int ScreenWidth => ScreenSize.X;
+	public int ScreenHeight => ScreenSize.Y;
+	public Vector2 RealViewportSize => ScreenSize.ToVector2() * (1f / Zoom);
+	public Vectangle RealViewportBounds => new Vectangle(Position - (RealViewportSize / 2f), RealViewportSize);
+
+	public Camera(Vector2? position = null) : base(position ?? Vector2.Zero) { }
+
+	public override void Update(GameTime gameTime) {
+		base.Update(gameTime);
+
+		TransformMatrix =
+			Matrix.CreateTranslation(new Vector3(-Position, 0)) *
+			Matrix.CreateRotationZ(Rotation) *
+			Matrix.CreateScale(Zoom, Zoom, 1f) *
+			Matrix.CreateTranslation(ScreenWidth / 2f, ScreenHeight / 2f, 0);
 	}
 }

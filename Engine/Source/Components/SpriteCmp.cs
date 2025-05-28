@@ -1,4 +1,5 @@
-﻿using Engine.Objects;
+﻿using Engine.Graphics.Stubs.Texture;
+using Engine.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -12,7 +13,7 @@ public class SpriteCmp : Component, IDrawable {
 	/// <summary>
 	/// The texture of the sprite
 	/// </summary>
-	public Texture2D Texture { get; set; }
+	public virtual ITexture2D? Texture { get; set; }
 	/// <summary>
 	/// The origin point of the sprite
 	/// </summary>
@@ -34,6 +35,10 @@ public class SpriteCmp : Component, IDrawable {
 	/// </summary>
 	public Rectangle? SourceRectangle { get; set; }
 	/// <summary>
+	/// The overlay color of the sprite
+	/// </summary>
+	public Color Tint { get; set; }
+	/// <summary>
 	/// The base layer depth used when determining the order of things on the screen
 	/// </summary>
 	public float LayerDepth { get; set; }
@@ -43,7 +48,7 @@ public class SpriteCmp : Component, IDrawable {
 	/// </summary>
 	public bool YSortEnabled { get; set; } = false;
 	/// <summary>
-	/// The amount of empty space between the bottom of the texture and its actual content
+	/// The amount of pixel rows between the top of the texture and the bottom of its actual content
 	/// This is used for determining the actual Y position of the sprite
 	/// </summary>
 	public float YSortOffset { get; set; } = 0f;
@@ -56,7 +61,7 @@ public class SpriteCmp : Component, IDrawable {
 				return LayerDepth;
 			}
 
-			return LayerDepth - 0.1f * ((Owner.ScreenPosition.Y + YSortOffset) / Camera.Active.ScreenHeight);
+			return LayerDepth - 0.1f * ((Owner!.ScreenPosition.Y + (YSortOffset * Scale)) / Camera.Active!.ScreenHeight);
 		}
 	}
 	/// <summary>
@@ -65,19 +70,21 @@ public class SpriteCmp : Component, IDrawable {
 	public bool Visible { get; set; } = true;
 #endregion
 
-	public SpriteCmp(Texture2D texture, Vector2? origin = null, float rotation = 0, float scale = 1, SpriteEffects flip = SpriteEffects.None, Rectangle? sourceRectangle = null, float layerDepth = 1) {
+	public SpriteCmp(ITexture2D? texture, Vector2? origin = null, float rotation = 0, float scale = 1, SpriteEffects flip = SpriteEffects.None, Rectangle? sourceRectangle = null, Color? tint = null, float layerDepth = 1) {
 		Texture = texture;
 		Origin = origin ?? Vector2.Zero;
 		Rotation = rotation;
 		Scale = scale;
 		Flip = flip;
 		SourceRectangle = sourceRectangle;
+		Tint = tint ?? Color.White;
 		LayerDepth = layerDepth;
 	}
 
 	public virtual void Draw(GameTime gameTime) {
 		if (Visible) {
-			Game.SpriteBatch.Draw(Texture, Owner.ScreenPosition, SourceRectangle, Color.White, Rotation, Origin, Scale, Flip, RealLayerDepth);
+			Vector2 pos = new Vector2(Utils.Round(Owner!.Position.X), Utils.Round(Owner.Position.Y));
+			Game.SpriteBatch!.Draw(Texture!.ToTexture2D(), pos, SourceRectangle, Tint, Rotation, Origin, Scale, Flip, RealLayerDepth);
 		}
 	}
 }

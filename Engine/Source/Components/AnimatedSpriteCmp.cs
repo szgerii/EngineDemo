@@ -1,6 +1,5 @@
-﻿using Engine.Objects;
+﻿using Engine.Graphics.Stubs.Texture;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +15,6 @@ public class Animation {
 	public int Row { get; set; }
 	/// <summary>
 	/// The length of the animation
-	/// TODO: default this to ColumnCount
 	/// </summary>
 	public int Length { get; set; }
 	/// <summary>
@@ -31,26 +29,26 @@ public class Animation {
 	/// Overwrites the spritesheet of the AnimatedSpriteCmp this animation is registered to
 	/// The AnimatedSpriteCmp will use this instead for drawing
 	/// </summary>
-	public Texture2D Texture { get; set; }
+	public ITexture2D? Texture { get; set; }
 
-	public Animation(int row, int length, bool loop = false, int offset = 0, Texture2D texture = null) {
+	public Animation(int row, int length, bool loop = false, int offset = 0, ITexture2D? texture = null) {
 		Row = row;
 		Length = length;
 		Loop = loop;
 		Offset = offset;
-		Texture	= texture;
+		Texture = texture;
 	}
 }
 
 /// <summary>
 /// Component for drawing animated sprites on the screen
 /// </summary>
-public class AnimatedSpriteCmp : SpriteCmp {
+public class AnimatedSpriteCmp : SpriteCmp, IUpdatable {
 	/// <summary>
 	/// Runs when the component has finished playing an animation
 	/// Callback gets a string param that is the animation's name
 	/// </summary>
-	public event EventHandler<string> AnimationFinished;
+	public event EventHandler<string>? AnimationFinished;
 
 	/// <summary>
 	/// The collection of animations registered to this AnimatedSpriteCmp
@@ -58,22 +56,28 @@ public class AnimatedSpriteCmp : SpriteCmp {
 	/// </summary>
 	public Dictionary<string, Animation> Animations { get; set; } = new Dictionary<string, Animation>();
 
-	protected Animation currentAnim;
-	protected string currentAnimationName;
+	public override ITexture2D? Texture {
+		get => base.Texture;
+		set {
+			base.Texture = value;
+			UpdateFrameSize();
+		}
+	}
+
+	protected Animation? currentAnim;
+	protected string? currentAnimationName;
 	/// <summary>
 	/// The name of the current animation
 	/// This can also be used for playing a new animation
 	/// TODO: func for q-ing new anim
 	/// </summary>
-	public string CurrentAnimation {
+	public string? CurrentAnimation {
 		get => currentAnimationName;
 		set {
-			if (currentAnimationName != value) {
-				currentAnimationName = value;
-				currentAnim = Animations[value];
-				CurrentFrame = 0;
-				lastFrameSwitch = TimeSpan.Zero;
-			}
+			currentAnimationName = value;
+			currentAnim = value == null ? null : Animations[value];
+			CurrentFrame = 0;
+			frameTime = 0;
 		}
 	}
 
@@ -85,8 +89,8 @@ public class AnimatedSpriteCmp : SpriteCmp {
 	public int ColumnCount {
 		get => columnCount;
 		set {
-			FrameWidth = Texture.Width / value;
 			columnCount = value;
+			UpdateFrameSize();
 		}
 	}
 
@@ -97,8 +101,8 @@ public class AnimatedSpriteCmp : SpriteCmp {
 	public int RowCount {
 		get => rowCount;
 		set {
-			FrameHeight = Texture.Height / value;
 			rowCount = value;
+			UpdateFrameSize();
 		}
 	}
 
@@ -130,24 +134,50 @@ public class AnimatedSpriteCmp : SpriteCmp {
 		}
 	}
 
-	public override float RealLayerDepth {
-		get {
-			if (!YSortEnabled) {
-				return LayerDepth;
-			}
+	public bool IsPlaying { get; protected set; }
 
-			// TODO: this just assumes that the frame is completely filled
-			return LayerDepth - 0.1f * ((Owner.ScreenPosition.Y + FrameHeight) / Camera.Active.ScreenHeight);
-		}
-	}
+	protected float frameTime;
 
-	protected TimeSpan lastFrameSwitch;
-
-	public AnimatedSpriteCmp(Texture2D texture, int columnCount, int rowCount, int fps) : base(texture) {
+	public AnimatedSpriteCmp(ITexture2D? texture, int columnCount, int rowCount, int fps) : base(texture) {
 		ColumnCount = columnCount;
 		RowCount = rowCount;
 		FPS = fps;
 		Origin = Vector2.Zero;
+	}
+
+	public void Update(GameTime gameTime) {
+		if (currentAnim == null || CurrentAnimation == null) {
+			IsPlaying = false;
+			return;
+		}
+
+		IsPlaying = true;
+
+		// if it's time, try to play the next frame
+		frameTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+
+		if (frameTime > frameGapMs) {
+			frameTime = 0;
+
+			CurrentFrame++;
+			if (CurrentFrame >= currentAnim.Length) {
+				if (currentAnim.Loop) {
+					CurrentFrame = 0;
+				} else {
+					CurrentFrame = currentAnim.Length - 1;
+					AnimationFinished?.Invoke(this, CurrentAnimation);
+					IsPlaying = false;
+				}
+			}
+		}
+	}
+
+	public Rectangle CalculateSrcRec() {
+		if (currentAnim == null) {
+			return Rectangle.Empty;
+		}
+
+		return new Rectangle(currentAnim.Offset * FrameWidth + FrameWidth * CurrentFrame, FrameHeight * currentAnim.Row, FrameWidth, FrameHeight);
 	}
 
 	public override void Draw(GameTime gameTime) {
@@ -156,21 +186,11 @@ public class AnimatedSpriteCmp : SpriteCmp {
 		}
 
 		// draw the current frame
-		Game.SpriteBatch.Draw(currentAnim.Texture ?? Texture, Owner.ScreenPosition, new Rectangle(currentAnim.Offset * FrameWidth + FrameWidth * CurrentFrame, FrameHeight * currentAnim.Row, FrameWidth, FrameHeight), Color.White, Rotation, Origin, Scale, Flip, RealLayerDepth);
+		Game.SpriteBatch!.Draw(currentAnim?.Texture?.ToTexture2D() ?? Texture!.ToTexture2D(), Owner!.Position, CalculateSrcRec(), Tint, Rotation, Origin, Scale, Flip, RealLayerDepth);
+	}
 
-		// if it's time, try to play the next frame
-		if ((gameTime.TotalGameTime - lastFrameSwitch).TotalMilliseconds > frameGapMs) {
-			lastFrameSwitch = gameTime.TotalGameTime;
-			
-			CurrentFrame++;
-			if (CurrentFrame >= currentAnim.Length) {
-				if (currentAnim.Loop) {
-					CurrentFrame = 0;
-				} else {
-					CurrentFrame = currentAnim.Length - 1;
-					AnimationFinished?.Invoke(this, CurrentAnimation);
-				}
-			}
-		}
+	private void UpdateFrameSize() {
+		FrameHeight = (currentAnim?.Texture?.Height ?? Texture?.Height ?? 0) / (RowCount != 0 ? RowCount : 1);
+		FrameWidth = (currentAnim?.Texture?.Width ?? Texture?.Width ?? 0) / (ColumnCount != 0 ? ColumnCount : 1);
 	}
 }

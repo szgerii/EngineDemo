@@ -11,13 +11,13 @@ public class Keyboard {
 	public KeyboardState PrevKS { get; set; }
 	public KeyboardState CurrentKS { get; set; }
 
-	private Dictionary<Keys, DateTime> downTimeouts = new Dictionary<Keys, DateTime>();
+	private readonly Dictionary<Keys, DateTime> downTimeouts = new Dictionary<Keys, DateTime>();
 
 	public delegate void PressedCallback();
 	public delegate void ReleasedCallback();
 
-	private Dictionary<Keys, PressedCallback> pressedCallbacks = new Dictionary<Keys, PressedCallback>();
-	private Dictionary<Keys, ReleasedCallback> releasedCallbacks = new Dictionary<Keys, ReleasedCallback>();
+	private readonly Dictionary<Keys, PressedCallback> pressedCallbacks = new Dictionary<Keys, PressedCallback>();
+	private readonly Dictionary<Keys, ReleasedCallback> releasedCallbacks = new Dictionary<Keys, ReleasedCallback>();
 
 	internal void UpdateEvents() {
 		foreach (Keys key in pressedCallbacks.Keys) {
@@ -53,7 +53,7 @@ public class Keyboard {
 	/// Checks whether the given key was just released in this frame,
 	/// meaning it was down in the previous frame, but now isn't
 	/// </summary>
-	public bool JustReleased(Keys key) => CurrentKS.IsKeyUp(key) && !PrevKS.IsKeyUp(key);
+	public bool JustReleased(Keys key) => !PrevKS.IsKeyUp(key) && CurrentKS.IsKeyUp(key);
 
 	/// <summary>
 	/// Checks whether a given key is down, and ensures that, using this function, 
@@ -103,17 +103,13 @@ public class Keyboard {
 	/// Removes all callbacks associated with the pressed event of a given key
 	/// </summary>
 	public void ClearPressedCallbacks(Keys key) {
-		if (pressedCallbacks.ContainsKey(key)) {
-			pressedCallbacks.Remove(key);
-		}
+		pressedCallbacks.Remove(key);
 	}
 
 	/// <summary>
 	/// Removes all callbacks associated with the released event of a given key
 	/// </summary>
 	public void ClearReleasedCallbacks(Keys key) {
-		if (releasedCallbacks.ContainsKey(key)) {
-			releasedCallbacks.Remove(key);
-		}
+		releasedCallbacks.Remove(key);
 	}
 }

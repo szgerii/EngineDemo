@@ -13,7 +13,7 @@ public class ActionSegment {
 	internal List<MouseButtons> mouseButtons;
 	internal List<Buttons> buttons;
 
-	public ActionSegment(Keys[] keys = null, MouseButtons[] mouseButtons = null, Buttons[] buttons = null) {
+	public ActionSegment(Keys[]? keys = null, MouseButtons[]? mouseButtons = null, Buttons[]? buttons = null) {
 		this.keys = new List<Keys>();
 		this.mouseButtons = new List<MouseButtons>();
 		this.buttons = new List<Buttons>();
@@ -36,14 +36,14 @@ public class ActionSegment {
 public class InputAction {
 	internal List<ActionSegment> actions;
 
-	public InputAction(ActionSegment[] actions = null) {
+	public InputAction(ActionSegment[]? actions = null) {
 		this.actions = new List<ActionSegment>();
 		if (actions != null) {
 			this.actions.AddRange(actions);
 		}
 	}
 
-	public InputAction(Keys[] keys = null, MouseButtons[] mouseButtons = null, Buttons[] buttons = null) {
+	public InputAction(Keys[]? keys = null, MouseButtons[]? mouseButtons = null, Buttons[]? buttons = null) {
 		actions = new List<ActionSegment> {
 			new ActionSegment(keys, mouseButtons, buttons)
 		};
@@ -62,14 +62,14 @@ public class Actions {
 	public GamePadState CurrentGPS { get; set; }
 	public bool LockToActiveDevice { get; set; } = true;
 
-	private Dictionary<string, DateTime> downTimeouts = new Dictionary<string, DateTime>();
-	private Dictionary<string, InputAction> actions = new Dictionary<string, InputAction>();
+	private readonly Dictionary<string, DateTime> downTimeouts = new Dictionary<string, DateTime>();
+	private readonly Dictionary<string, InputAction> actions = new Dictionary<string, InputAction>();
 
 	public delegate void PressedCallback();
 	public delegate void ReleasedCallback();
 
-	private Dictionary<string, PressedCallback> pressedCallbacks = new Dictionary<string, PressedCallback>();
-	private Dictionary<string, ReleasedCallback> releasedCallbacks = new Dictionary<string, ReleasedCallback>();
+	private readonly Dictionary<string, PressedCallback> pressedCallbacks = new Dictionary<string, PressedCallback>();
+	private readonly Dictionary<string, ReleasedCallback> releasedCallbacks = new Dictionary<string, ReleasedCallback>();
 
 	internal void UpdateEvents() {
 		foreach (string name in pressedCallbacks.Keys) {
@@ -99,9 +99,14 @@ public class Actions {
 	/// Deletes an action with a given name
 	/// </summary>
 	public void Remove(string name) {
-		if (actions.ContainsKey(name)) {
-			actions.Remove(name);
-		}
+		actions.Remove(name);
+	}
+
+	/// <summary>
+	/// Checks whether an action with the given name exists
+	/// </summary>
+	public bool Exists(string name) {
+		return actions.ContainsKey(name);
 	}
 
 	/// <summary>
@@ -129,7 +134,7 @@ public class Actions {
 	/// meaning it was down in the previous frame, but now isn't
 	/// </summary>
 	public bool JustReleased(string name)
-		=> !IsDown(CurrentKS, CurrentMS, CurrentGPS, actions[name]) && IsDown(PrevKS, PrevMS, PrevGPS, actions[name]);
+		=> IsDown(PrevKS, PrevMS, PrevGPS, actions[name]) && !IsDown(CurrentKS, CurrentMS, CurrentGPS, actions[name]);
 
 	/// <summary>
 	/// Checks whether an action with a given name is down, and ensures that, using this function, 
@@ -179,18 +184,14 @@ public class Actions {
 	/// Removes all callbacks associated with the pressed event of a complex action with a given name
 	/// </summary>
 	public void ClearPressedCallbacks(string name) {
-		if (pressedCallbacks.ContainsKey(name)) {
-			pressedCallbacks.Remove(name);
-		}
+		pressedCallbacks.Remove(name);
 	}
 
 	/// <summary>
 	/// Removes all callbacks associated with the released event of a complex action with a given name
 	/// </summary>
 	public void ClearReleasedCallbacks(string name) {
-		if (releasedCallbacks.ContainsKey(name)) {
-			releasedCallbacks.Remove(name);
-		}
+		releasedCallbacks.Remove(name);
 	}
 
 	internal bool IsDown(KeyboardState ks, MouseState ms, GamePadState gps, ActionSegment action) {

@@ -5,6 +5,8 @@ using System;
 using Engine.Debug;
 using Engine.UI;
 using Engine.UI.Core;
+using Engine.Helpers;
+using Engine.Objects;
 
 namespace Demo.Scenes;
 
@@ -30,6 +32,10 @@ public class GameScene : Scene {
 			throw new InvalidOperationException("Trying to load a map through an inactive game scene");
 		}
 
+		Camera.Active = new Camera(Vector2.Zero);
+		Camera.Active.Zoom = 1.5f;
+		Game.AddObject(Camera.Active);
+
 		CurrentLevel = new Level(mapName);
 		CurrentLevel.LoadLevel();
 		AddObject(CurrentLevel);
@@ -37,7 +43,7 @@ public class GameScene : Scene {
 	}
 
 	private void InitMap() {
-		CollisionManager.Init(CurrentLevel.MapWidth, CurrentLevel.MapHeight, CurrentLevel.TileSize);
+		CollisionManager.Init(new Vectangle(0, 0, CurrentLevel.MapWidth * CurrentLevel.TileSize, CurrentLevel.MapHeight * CurrentLevel.TileSize));
 		PostUpdate += CollisionManager.PostUpdate;
 	}
 }

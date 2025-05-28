@@ -29,10 +29,10 @@ public class GamePadAxisChangedEventArgs : EventArgs {
 /// Manages all gamepad checks and events (currently gamepad#1 only), including connection status, buttons and axis
 /// </summary>
 public class GamePad {
-	public GamePadState PrevGPS;
-	public GamePadState CurrentGPS;
+	public GamePadState PrevGPS { get; set; }
+	public GamePadState CurrentGPS { get; set; }
 
-	private Dictionary<Buttons, DateTime> downTimeouts = new Dictionary<Buttons, DateTime>();
+	private readonly Dictionary<Buttons, DateTime> downTimeouts = new Dictionary<Buttons, DateTime>();
 
 	public delegate void PressedCallback();
 	public delegate void ReleasedCallback();
@@ -40,11 +40,11 @@ public class GamePad {
 	public delegate void ConnectedCallback();
 	public delegate void DisconnectedCallback();
 
-	private Dictionary<Buttons, PressedCallback> pressedCallbacks = new Dictionary<Buttons, PressedCallback>();
-	private Dictionary<Buttons, ReleasedCallback> releasedCallbacks = new Dictionary<Buttons, ReleasedCallback>();
-	private Dictionary<GamePadAxes, AxisChangedCallback> axisChangedCallbacks = new Dictionary<GamePadAxes, AxisChangedCallback>();
-	private ConnectedCallback connectedCallback = null;
-	private DisconnectedCallback disconnectedCallback = null;
+	private readonly Dictionary<Buttons, PressedCallback> pressedCallbacks = new Dictionary<Buttons, PressedCallback>();
+	private readonly Dictionary<Buttons, ReleasedCallback> releasedCallbacks = new Dictionary<Buttons, ReleasedCallback>();
+	private readonly Dictionary<GamePadAxes, AxisChangedCallback> axisChangedCallbacks = new Dictionary<GamePadAxes, AxisChangedCallback>();
+	private ConnectedCallback? connectedCallback = null;
+	private DisconnectedCallback? disconnectedCallback = null;
 
 	internal void UpdateEvents() {
 		foreach (Buttons button in pressedCallbacks.Keys) {
@@ -97,7 +97,7 @@ public class GamePad {
 	/// meaning it was down in the previous frame, but now isn't
 	/// </summary>
 	public bool JustReleased(Buttons button)
-		=> CurrentGPS.IsButtonUp(button) && !PrevGPS.IsButtonUp(button);
+		=> !PrevGPS.IsButtonUp(button) && CurrentGPS.IsButtonUp(button);
 
 	/// <summary>
 	/// Checks whether a given gamepad button is down, and ensures that, using this function, 
@@ -147,18 +147,14 @@ public class GamePad {
 	/// Removes all callbacks associated with the pressed event of a given gamepad button
 	/// </summary>
 	public void ClearPressedCallbacks(Buttons button) {
-		if (pressedCallbacks.ContainsKey(button)) {
-			pressedCallbacks.Remove(button);
-		}
+		pressedCallbacks.Remove(button);
 	}
 
 	/// <summary>
 	/// Removes all callbacks associated with the released event of a given gamepad button
 	/// </summary>s
 	public void ClearReleasedCallbacks(Buttons button) {
-		if (releasedCallbacks.ContainsKey(button)) {
-			releasedCallbacks.Remove(button);
-		}
+		releasedCallbacks.Remove(button);
 	}
 
 	/// <summary>
@@ -216,9 +212,7 @@ public class GamePad {
 	/// Removes all callbacks associated with the value changed event of a given gamepad axis
 	/// </summary>
 	public void ClearAxisChangedCallbacks(GamePadAxes axis) {
-		if (axisChangedCallbacks.ContainsKey(axis)) {
-			axisChangedCallbacks.Remove(axis);
-		}
+		axisChangedCallbacks.Remove(axis);
 	}
 
 	/// <summary>

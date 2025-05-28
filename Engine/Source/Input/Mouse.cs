@@ -44,7 +44,9 @@ public class Mouse {
 	public MouseState PrevMS { get; set; }
 	public MouseState CurrentMS { get; set; }
 
-	private Dictionary<MouseButtons, DateTime> downTimeouts = new Dictionary<MouseButtons, DateTime>();
+	public bool ScrollLock { get; set; }
+
+	private readonly Dictionary<MouseButtons, DateTime> downTimeouts = new Dictionary<MouseButtons, DateTime>();
 
 	public delegate void PressedCallback();
 	public delegate void ReleasedCallback();
@@ -52,11 +54,11 @@ public class Mouse {
 	public delegate void ScrollWheelChangedCallback(MouseScrollWheelChangedEventArgs e);
 	public delegate void HScrollWheelChangedCallback(MouseScrollWheelChangedEventArgs e);
 
-	private Dictionary<MouseButtons, PressedCallback> pressedCallbacks = new Dictionary<MouseButtons, PressedCallback>();
-	private Dictionary<MouseButtons, ReleasedCallback> releasedCallbacks = new Dictionary<MouseButtons, ReleasedCallback>();
-	private MovedCallback movedCallback = null;
-	private ScrollWheelChangedCallback scrollWheelChangedCallback = null;
-	private HScrollWheelChangedCallback hScrollWheelChangedCallback = null;
+	private readonly Dictionary<MouseButtons, PressedCallback> pressedCallbacks = new Dictionary<MouseButtons, PressedCallback>();
+	private readonly Dictionary<MouseButtons, ReleasedCallback> releasedCallbacks = new Dictionary<MouseButtons, ReleasedCallback>();
+	private MovedCallback? movedCallback = null;
+	private ScrollWheelChangedCallback? scrollWheelChangedCallback = null;
+	private HScrollWheelChangedCallback? hScrollWheelChangedCallback = null;
 
 	internal void UpdateEvents() {
 		foreach (MouseButtons mouseButton in pressedCallbacks.Keys) {
@@ -75,11 +77,11 @@ public class Mouse {
 			movedCallback(new MouseMovedEventArgs(PrevMS.Position.ToVector2(), CurrentMS.Position.ToVector2(), Movement));
 		}
 
-		if (ScrollChanged && scrollWheelChangedCallback != null) {
+		if (ScrollChanged && scrollWheelChangedCallback != null && !ScrollLock) {
 			scrollWheelChangedCallback(new MouseScrollWheelChangedEventArgs(PrevMS.ScrollWheelValue, CurrentMS.ScrollWheelValue, ScrollMovement));
 		}
 
-		if (HScrollChanged && hScrollWheelChangedCallback != null) {
+		if (HScrollChanged && hScrollWheelChangedCallback != null && !ScrollLock) {
 			hScrollWheelChangedCallback(new MouseScrollWheelChangedEventArgs(PrevMS.HorizontalScrollWheelValue, CurrentMS.HorizontalScrollWheelValue, HScrollMovement));
 		}
 	}
@@ -106,7 +108,7 @@ public class Mouse {
 	/// meaning it was down in the previous frame, but now isn't
 	/// </summary>
 	public bool JustReleased(MouseButtons mouseButton)
-		=> !IsDown(CurrentMS, mouseButton) && IsDown(PrevMS, mouseButton);
+		=> IsDown(PrevMS, mouseButton) && !IsDown(CurrentMS, mouseButton);
 
 	/// <summary>
 	/// Checks whether a given mouse button is down, and ensures that, using this function, 
@@ -156,18 +158,14 @@ public class Mouse {
 	/// Removes all callbacks associated with the pressed event of a given mouse button
 	/// </summary>
 	public void ClearPressedCallbacks(MouseButtons mouseButton) {
-		if (pressedCallbacks.ContainsKey(mouseButton)) {
-			pressedCallbacks.Remove(mouseButton);
-		}
+		pressedCallbacks.Remove(mouseButton);
 	}
 
 	/// <summary>
 	/// Removes all callbacks associated with the released event of a given mouse button
 	/// </summary>
 	public void ClearReleasedCallbacks(MouseButtons mouseButton) {
-		if (releasedCallbacks.ContainsKey(mouseButton)) {
-			releasedCallbacks.Remove(mouseButton);
-		}
+		releasedCallbacks.Remove(mouseButton);
 	}
 
 	/// <summary>
@@ -200,7 +198,7 @@ public class Mouse {
 	/// <summary>
 	/// Returns how much the scroll wheel has moved since the previous frame
 	/// </summary>
-	public int ScrollMovement => CurrentMS.ScrollWheelValue - PrevMS.ScrollWheelValue;
+	public int ScrollMovement => ScrollLock ? 0 : CurrentMS.ScrollWheelValue - PrevMS.ScrollWheelValue;
 
 	/// <summary>
 	/// Returns the current value of the horizontal mouse scroll wheel
@@ -275,11 +273,11 @@ public class Mouse {
 		if (
 			Location.X < 0 ||
 			Location.Y < 0 ||
-			Location.X >= Game.Graphics.PreferredBackBufferWidth ||
-			Location.Y >= Game.Graphics.PreferredBackBufferHeight) {
+			Location.X >= Game.Graphics!.PreferredBackBufferWidth ||
+			Location.Y >= Game.Graphics!.PreferredBackBufferHeight) {
 			return false;
 		}
-		if (!Game.Instance.IsActive) {
+		if (!(Game.Instance?.IsActive ?? false)) {
 			return false;
 		}
 		switch (mouseButton) {

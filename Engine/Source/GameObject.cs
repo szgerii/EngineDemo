@@ -9,9 +9,9 @@ public abstract class GameObject : IUpdatable, IDrawable {
 	/// The position of the object relative to the screen
 	/// </summary>
 	public virtual Vector2 ScreenPosition {
-		get => Position - Camera.Active.Position;
+		get => Position - Camera.Active!.Position - (Camera.Active!.RealViewportSize / 2f);
 		set {
-			Position = value + Camera.Active.Position;
+			Position = value + Camera.Active!.Position;
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class GameObject : IUpdatable, IDrawable {
 
 	public void Attach(Component cmp) => CmpHandler.Attach(cmp);
 	public void Detach<T>() where T : Component => CmpHandler.Detach<T>();
-	public T GetComponent<T>() where T : Component => CmpHandler.GetComponent<T>();
-	public bool GetComponent<T>(out T component) where T : Component => CmpHandler.GetComponent(out component);
+	public T? GetComponent<T>() where T : Component => CmpHandler.GetComponent<T>();
+	public bool GetComponent<T>(out T? component) where T : Component => CmpHandler.GetComponent(out component);
 	public bool HasComponent<T>() where T : Component => CmpHandler.HasComponent<T>();
 }

@@ -3,15 +3,18 @@ using Engine.Components;
 using Engine.Collision;
 using Engine.Input;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Demo.Components;
+using Engine.Source.Interfaces;
 
 namespace Demo.Objects;
 
-public class Player : GameObject {
+public class Player : GameObject, IHasCenter {
 	public const int WALK_SPEED = 200;
 	public static Player Instance { get; private set; }
 
+	public Vector2 Center => Position + new Vector2(sprite.FrameWidth * 0.5f, sprite.FrameHeight * 0.5f);
+
+	private readonly AnimatedSpriteCmp sprite;
 	private readonly DirectionalAnimationCmp dirAnimCmp;
 	private readonly CollisionCmp collCmp;
 	private readonly ColliderCollectionCmp hitboxes;
@@ -28,9 +31,10 @@ public class Player : GameObject {
 		hitboxes.DefaultTargets = CollisionTags.Damageable;
 		Attach(hitboxes);
 
-		AnimatedSpriteCmp sprite = new(Game.ContentManager.Load<Texture2D>("assets/sprites/entities/player"), 3, 4, 10);
+		sprite = new(Game.LoadTexture("assets/sprites/entities/player"), 3, 4, 10);
 		sprite.LayerDepth = 0.5f;
 		sprite.YSortEnabled = true;
+		sprite.YSortOffset = sprite.FrameHeight;
 
 		// Idle animations
 		sprite.Animations["IdleDown"] = new Animation(0, 1, true, 1);

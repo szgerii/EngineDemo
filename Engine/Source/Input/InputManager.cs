@@ -17,16 +17,17 @@ public static class InputManager {
 	private static KeyboardState currentKS;
 	private static MouseState prevMS;
 	private static MouseState currentMS;
-	private static GamePadState[] prevGPS = new GamePadState[4];
-	private static GamePadState[] currentGPS = new GamePadState[4];
+	private static readonly GamePadState[] prevGPS = new GamePadState[4];
+	private static readonly GamePadState[] currentGPS = new GamePadState[4];
 
 	public static Mouse Mouse { get; private set; } = new Mouse();
 	public static Keyboard Keyboard { get; private set; } = new Keyboard();
 	public static GamePad GamePad { get; private set; } = new GamePad();
 	public static Actions Actions { get; private set; } = new Actions();
 	public static ActiveDevice ActiveDevice { get; private set; } = ActiveDevice.KeyboardMouse;
-	public static event EventHandler<ActiveDevice> ActiveDeviceChanged;
+	public static event EventHandler<ActiveDevice>? ActiveDeviceChanged;
 	public static int ActiveGamepad { get; private set; } = 1;
+	public static bool ShowCursor { get; set; } = true;
 
 	public static void Initialize() {
 		currentKS = Microsoft.Xna.Framework.Input.Keyboard.GetState();
@@ -44,8 +45,8 @@ public static class InputManager {
 	}
 
 	public static void Update(GameTime gameTime) {
-		// Update states
-		prevKS = currentKS;
+        // Update states
+        prevKS = currentKS;
 		prevMS = currentMS;
 		for (int i = 0; i < 4; i++) {
 			prevGPS[i] = currentGPS[i];
@@ -76,10 +77,13 @@ public static class InputManager {
 				break;
 			}
 		}
-		if (ActiveDevice != ActiveDevice.KeyboardMouse) {
-			Game.Instance.IsMouseVisible = false;
-		} else {
-			Game.Instance.IsMouseVisible = true;
+
+		if (ShowCursor) {
+			if (ActiveDevice != ActiveDevice.KeyboardMouse) {
+				Game.Instance!.IsMouseVisible = false;
+			} else {
+				Game.Instance!.IsMouseVisible = true;
+			}
 		}
 
 		if (ActiveDevice != prevAD) {

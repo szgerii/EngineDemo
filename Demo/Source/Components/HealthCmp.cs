@@ -2,6 +2,7 @@
 using Engine;
 using Engine.Components;
 using Engine.Debug;
+using Engine.Graphics.Stubs.Texture;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -44,7 +45,7 @@ public class HealthCmp : Component {
 		}
 	}
 
-	private static Texture2D debugHealthTex = Utils.GenerateTexture(1, 1, new Color(Color.Red, 0.2f));
+	private static ITexture2D debugHealthTex = Utils.GenerateTexture(1, 1, new Color(Color.Red, 0.2f));
 
 	static HealthCmp() {
 		DebugMode.AddFeature(new LoopedDebugFeature("draw-health", (object s, GameTime gt) => {
@@ -80,6 +81,6 @@ public class HealthCmp : Component {
 		float scale = Health / (float)MaxHealth;
 		int height = Utils.Round(fullHeight * scale);
 		Rectangle destRec = new Rectangle((int)Owner.ScreenPosition.X, (int)Owner.ScreenPosition.Y + (fullHeight - height), fullWidth, height);
-		Game.SpriteBatch.Draw(debugHealthTex, destRec, null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0.9f);
+		Game.SpriteBatch.Draw(debugHealthTex.ToTexture2D(), Owner.Position, debugHealthTex.Bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 	}
 }
