@@ -6,14 +6,14 @@ namespace Engine.Audio.FX;
 /// <summary>
 /// A simple bass boost effect. Kinda noisy
 /// </summary>
-public class BassBoosEffect : Effect {
+public class BassBoostEffect : Effect {
 	public enum Params : uint {
 		Wet = BassboostFilter.WET,
 		Boost = BassboostFilter.BOOST
 	}
 
-	private BassboostFilter bbf;
-	public override SoloudObject EffectObject => bbf;
+	private BassboostFilter? bbf;
+	public override SoloudObject? EffectObject => bbf;
 	private float boost;
 	/// <summary>
 	/// The bass boost strength property, ranging from 0 to 10
@@ -39,7 +39,7 @@ public class BassBoosEffect : Effect {
 		}
 	}
 
-	public BassBoosEffect(float boost = 0f, float wet = 1f) : base(wet) {
+	public BassBoostEffect(float boost = 0f, float wet = 1f) : base(wet) {
 		Boost = boost;
 	}
 
@@ -64,7 +64,7 @@ public class BassBoosEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		bbf.Dispose();
+		bbf?.Dispose();
 		bbf = null;
 	}
 

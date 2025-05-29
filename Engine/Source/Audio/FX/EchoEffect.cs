@@ -13,8 +13,8 @@ public class EchoEffect : Effect {
 		Decay = EchoFilter.DECAY,
 		Filter = EchoFilter.FILTER
 	}
-	private EchoFilter ef;
-	public override SoloudObject EffectObject => ef;
+	private EchoFilter? ef;
+	public override SoloudObject? EffectObject => ef;
 	private float delay;
 	/// <summary>
 	/// The ammount of delay (in seconds)
@@ -117,7 +117,7 @@ public class EchoEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		ef.Dispose();
+		ef?.Dispose();
 		ef = null;
 	}
 

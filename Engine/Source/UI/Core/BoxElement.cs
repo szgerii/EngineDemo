@@ -7,7 +7,7 @@ namespace Engine.UI.Core;
 public class BoxElement {
 	public bool NeedsRedraw { get; set; } = true;
 	public VertexBox[] Verts { get; set; }
-	public RenderTarget2D Output { get; private set; }
+	public RenderTarget2D? Output { get; private set; }
 
 	public BoxElement(Vector2 size, float borderRadius, float borderThickness, AdvancedColor backgroundColor, AdvancedColor borderColor) {
 		this.size = size;
@@ -85,9 +85,9 @@ public class BoxElement {
 	/// Resizes the output texture of this element if neccessary
 	/// </summary>
 	public void EnsureCorrectOutput() {
-		if (Output == null || Output.Width != size.X || Output.Height != size.Y) {
+		if (Game.CanDraw && (Output == null || Output.Width != size.X || Output.Height != size.Y)) {
 			Output = new RenderTarget2D(
-				Game.Graphics.GraphicsDevice,
+				Game.Graphics!.GraphicsDevice,
 				(int)Math.Ceiling(size.X),
 				(int)Math.Ceiling(size.Y)
 			);

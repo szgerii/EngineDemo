@@ -1,5 +1,6 @@
 ﻿using SoLoud;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Engine.Audio.Types;
 
@@ -10,10 +11,11 @@ public class TextToSpeechAudio : AudioSource {
 	/// </summary>
 	public string Text {
 		get => text;
+		[MemberNotNull(nameof(text))]
 		set {
 			text = value;
 			if (Loaded) {
-				speechObj.setText(text);
+				speechObj!.setText(text);
 			}
 		}
 	}
@@ -45,7 +47,7 @@ public class TextToSpeechAudio : AudioSource {
 			}
 		}
 	}
-	private Speech speechObj;
+	private Speech? speechObj;
 	public uint VoiceHandle { get; private set; } = 0;
 
 	public TextToSpeechAudio(string name, string text, float volume = 1f, float pan = 0f, float playbackSpeed = 1f, bool looping = false, double startPosition = 0d, string targetBus = "master")
@@ -78,7 +80,7 @@ public class TextToSpeechAudio : AudioSource {
 			return;
 		}
 		Stop();
-		speechObj.Dispose();
+		speechObj?.Dispose();
 		speechObj = null;
 		Loaded = false;
 	}
@@ -93,7 +95,7 @@ public class TextToSpeechAudio : AudioSource {
 			Load();
 		}
 
-		VoiceHandle = AudioManager.Buses[TargetBus].BusObject.play(speechObj, aVolume: volume, aPan: pan, aPaused: 1);
+		VoiceHandle = AudioManager.Buses[TargetBus].BusObject!.play(speechObj!, aVolume: volume, aPan: pan, aPaused: 1);
 		AssertHandle(VoiceHandle);
 		if (looping) {
 			AudioManager.Soloud.setLooping(VoiceHandle, 1);
@@ -137,7 +139,7 @@ public class TextToSpeechAudio : AudioSource {
 
 	protected override void UpdateLiveBus() {
 		if (Playing) {
-			AudioManager.Buses[TargetBus].BusObject.annexSound(VoiceHandle);
+			AudioManager.Buses[TargetBus].BusObject!.annexSound(VoiceHandle);
 		}
 	}
 

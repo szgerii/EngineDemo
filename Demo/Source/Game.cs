@@ -15,7 +15,7 @@ namespace Demo;
 
 public class Game : Engine.Game {
 	private bool displayStats = false;
-	private TextElement statsText;
+	private TextElement? statsText;
 
 	protected override void Initialize() {
 		base.Initialize();
@@ -42,7 +42,7 @@ public class Game : Engine.Game {
 			if (displayStats) {
 				statsText = new("", "roboto", 40, 400, Color.Black);
 			} else {
-				statsText.Dispose();
+				statsText?.Dispose();
 			}
 		}));
 
@@ -69,13 +69,13 @@ public class Game : Engine.Game {
 		drawTime.AddValue((DateTime.Now - start).TotalMilliseconds);
 
 		if (displayStats) {
-			statsText.Text = $"{tickTime.Average:0.00} ms / {drawTime.Average:0.00} ms\n{tickTime.Max:0.00} ms / {drawTime.Max:0.00} ms";
+			statsText!.Text = $"{tickTime.Average:0.00} ms / {drawTime.Average:0.00} ms\n{tickTime.Max:0.00} ms / {drawTime.Max:0.00} ms";
 
-			SpriteBatch.Begin(sortMode: SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
+			SpriteBatch!.Begin(sortMode: SpriteSortMode.BackToFront, samplerState: SamplerState.PointClamp);
 			SpriteBatch.Draw(
 				statsText.Output,
 				Vector2.One * 20,
-				new Rectangle(0, 0, statsText.Output.Width, statsText.Output.Height),
+				new Rectangle(0, 0, statsText.Output!.Width, statsText.Output.Height),
 				Color.White,
 				0,
 				new Vector2(0, 0),
@@ -87,14 +87,14 @@ public class Game : Engine.Game {
 		}
 	}
 
-	private void InputSetup() {
-		InputManager.Actions.Register("up", new InputAction(keys: new[] { Keys.W, Keys.Up }));
-		InputManager.Actions.Register("down", new InputAction(keys: new[] { Keys.S, Keys.Down }));
-		InputManager.Actions.Register("left", new InputAction(keys: new[] { Keys.A, Keys.Left }));
-		InputManager.Actions.Register("right", new InputAction(keys: new[] { Keys.D, Keys.Right }));
-		InputManager.Actions.Register("increase-zoom", new InputAction(keys: new[] { Keys.O }));
-		InputManager.Actions.Register("decrease-zoom", new InputAction(keys: new[] { Keys.I }));
-		InputManager.Actions.Register("reset-zoom", new InputAction(keys: new[] { Keys.NumPad0 }));
+	private static void InputSetup() {
+		InputManager.Actions.Register("up", new InputAction(keys: [ Keys.W, Keys.Up ]));
+		InputManager.Actions.Register("down", new InputAction(keys: [ Keys.S, Keys.Down ]));
+		InputManager.Actions.Register("left", new InputAction(keys: [ Keys.A, Keys.Left ]));
+		InputManager.Actions.Register("right", new InputAction(keys: [ Keys.D, Keys.Right ]));
+		InputManager.Actions.Register("increase-zoom", new InputAction(keys: [ Keys.O ]));
+		InputManager.Actions.Register("decrease-zoom", new InputAction(keys: [ Keys.I ]));
+		InputManager.Actions.Register("reset-zoom", new InputAction(keys: [ Keys.NumPad0 ]));
 
 		// debug
 		InputManager.Keyboard.OnPressed(Keys.V, () => DebugMode.ToggleFeature("coll-check-areas"));
@@ -105,14 +105,14 @@ public class Game : Engine.Game {
 		InputManager.Keyboard.OnPressed(Keys.H, () => DebugMode.ToggleFeature("draw-health"));
 		InputManager.Keyboard.OnPressed(Keys.X, () => {
 			foreach (GameObject obj in GameScene.Active.GameObjects) {
-				if (obj.GetComponent(out HealthCmp h)) {
+				if (obj.GetComponent(out HealthCmp? h)) {
 					h.Health -= 1;
 				}
 			}
 		});
 		InputManager.Keyboard.OnPressed(Keys.Y, () => {
 			foreach (GameObject obj in GameScene.Active.GameObjects) {
-				if (obj.GetComponent(out HealthCmp h)) {
+				if (obj.GetComponent(out HealthCmp? h)) {
 					h.Health += 1;
 				}
 			}

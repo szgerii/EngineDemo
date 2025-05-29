@@ -7,7 +7,7 @@ public class Effects {
 	private Dictionary<uint, Effect> effects = new Dictionary<uint, Effect>();
 
 	public uint TargetHandle { get; private set; } = 0;
-	public SoLoud.Bus BusObject { get; private set; } = null;
+	public SoLoud.Bus? BusObject { get; private set; } = null;
 	public bool Active { get; private set; } = false;
 
 	/// <summary>
@@ -34,7 +34,7 @@ public class Effects {
 
 	private void Apply(uint id) {
 		effects[id].Activate(TargetHandle, id);
-		BusObject.setFilter(id, effects[id].EffectObject);
+		BusObject!.setFilter(id, effects[id].EffectObject!);
 		effects[id].InitializeParams();
 		effects[id].Active = true;
 	}
@@ -49,7 +49,7 @@ public class Effects {
 	}
 
 	private void Clear(uint id) {
-		BusObject.setFilter(id, new SoLoud.SoloudObject());
+		BusObject!.setFilter(id, new SoLoud.SoloudObject());
 		effects[id].Deactivate();
 	}
 

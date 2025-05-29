@@ -33,8 +33,10 @@ public static class AudioManager {
 
 	public static void Initialize() {
 		string path = new Uri(typeof(AudioManager).Assembly.Location).LocalPath;
-		string folder = Path.GetDirectoryName(path);
-
+		string? folder = Path.GetDirectoryName(path);
+		if (folder == null)
+			throw new AudioLoadException("Couldn't determine a valid path for the current directory");
+		
 		string subfolder = Environment.Is64BitProcess ? "\\win64\\" : "\\win32\\";
 
 		NativeLibrary.Load(folder + subfolder + "soloud.dll");

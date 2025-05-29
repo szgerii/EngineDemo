@@ -48,9 +48,9 @@ public class HealthCmp : Component {
 	private static ITexture2D debugHealthTex = Utils.GenerateTexture(1, 1, new Color(Color.Red, 0.2f));
 
 	static HealthCmp() {
-		DebugMode.AddFeature(new LoopedDebugFeature("draw-health", (object s, GameTime gt) => {
+		DebugMode.AddFeature(new LoopedDebugFeature("draw-health", (object? s, GameTime gt) => {
 			foreach (GameObject obj in GameScene.Active.GameObjects) {
-				if (obj.GetComponent(out HealthCmp h)) {
+				if (obj.GetComponent(out HealthCmp? h)) {
 					h.DebugDrawHealth();
 				}
 			}
@@ -63,15 +63,15 @@ public class HealthCmp : Component {
 	}
 
 	public void Die() {
-		Game.RemoveObject(Owner);
+		Game.RemoveObject(Owner!);
 	}
 
 	public void DebugDrawHealth() {
 		int fullWidth, fullHeight;
-		if (Owner.GetComponent(out SpriteCmp sprite)) {
-			fullWidth = sprite.SourceRectangle?.Width ?? sprite.Texture.Width;
-			fullHeight = sprite.SourceRectangle?.Height ?? sprite.Texture.Height;
-		} else if (Owner.GetComponent(out AnimatedSpriteCmp animSprite)) {
+		if (Owner!.GetComponent(out SpriteCmp? sprite)) {
+			fullWidth = sprite.SourceRectangle?.Width ?? sprite.Texture?.Width ?? 0;
+			fullHeight = sprite.SourceRectangle?.Height ?? sprite.Texture?.Height ?? 0;
+		} else if (Owner.GetComponent(out AnimatedSpriteCmp? animSprite)) {
 			fullWidth = animSprite.FrameWidth;
 			fullHeight = animSprite.FrameHeight;
 		} else {
@@ -81,6 +81,6 @@ public class HealthCmp : Component {
 		float scale = Health / (float)MaxHealth;
 		int height = Utils.Round(fullHeight * scale);
 		Rectangle destRec = new Rectangle((int)Owner.ScreenPosition.X, (int)Owner.ScreenPosition.Y + (fullHeight - height), fullWidth, height);
-		Game.SpriteBatch.Draw(debugHealthTex.ToTexture2D(), Owner.Position, debugHealthTex.Bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
+		Game.SpriteBatch!.Draw(debugHealthTex.ToTexture2D(), Owner.Position, debugHealthTex.Bounds, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0.9f);
 	}
 }

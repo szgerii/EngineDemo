@@ -62,8 +62,8 @@ public class RobotizeEffect : Effect {
 			}
 		}
 	}
-	private SoLoud.RobotizeFilter rf;
-	public override SoloudObject EffectObject => rf;
+	private SoLoud.RobotizeFilter? rf;
+	public override SoloudObject? EffectObject => rf;
 
 	public RobotizeEffect(float frequency = 1f, FilterWave wave = FilterWave.Square, float wet = 1f) : base(wet) {
 		Frequency = frequency;
@@ -92,7 +92,7 @@ public class RobotizeEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		rf.Dispose();
+		rf?.Dispose();
 		rf = null;
 	}
 

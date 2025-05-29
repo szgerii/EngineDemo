@@ -6,17 +6,19 @@ using System.Collections.Generic;
 namespace Engine.UI.Core;
 
 public static class TextRenderer {
-	private static Dictionary<string, Font> fonts = new Dictionary<string, Font>();
+	private readonly static Dictionary<string, Font> fonts = new Dictionary<string, Font>();
 	public static IReadOnlyDictionary<string, Font> Fonts => fonts;
-	private static Effect textEffect;
-	private static DynamicVertexBuffer vbo;
-	private static IndexBuffer ibo;
+	private static Effect? textEffect;
+	private static DynamicVertexBuffer? vbo;
+	private static IndexBuffer? ibo;
 	private static int bufferLen;
 
 	/// <summary>
 	/// Initializes the text renderer, call in LoadContent() pretty please
 	/// </summary>
 	public static void Init(string effectPath, int bufferSize = 800) {
+		if (!Game.CanDraw) return;
+		
 		textEffect = Game.ContentManager.Load<Effect>(effectPath);
 		vbo = new DynamicVertexBuffer(
 			Game.Graphics.GraphicsDevice,
@@ -64,12 +66,14 @@ public static class TextRenderer {
 	/// Call at the start of Game.Draw(), BEFORE spritebatch.Begin pls ^^
 	/// </summary>
 	public static void Render() {
+		if (!Game.CanDraw) return;
+
 		GraphicsDevice device = Game.Graphics.GraphicsDevice;
 		// bind ibo
 		device.Indices = ibo;
 		foreach ((string name, Font font) in fonts) {
 			// font specific uniforms
-			textEffect.Parameters["PxRange"].SetValue(font.Layout.Atlas.DistanceRange);
+			textEffect!.Parameters["PxRange"].SetValue(font.Layout.Atlas!.DistanceRange);
 			textEffect.Parameters["AtlasSize"].SetValue(new Vector2(font.Layout.Atlas.Width, font.Layout.Atlas.Height));
 			textEffect.Parameters["AtlasTexture"].SetValue(font.Texture);
 			foreach (TextElement elem in font.Elements) {
@@ -92,7 +96,7 @@ public static class TextRenderer {
 					}
 					while (length > 0) {
 						// vbo
-						vbo.SetData(elem.Verts, currentStart, length);
+						vbo!.SetData(elem.Verts, currentStart, length);
 						device.SetVertexBuffer(vbo);
 						// apply the shader (+size uniform)
 						float w = elem.Width;
@@ -126,7 +130,7 @@ public static class TextRenderer {
 
 		Vector2 pen = new Vector2(0, elem.Height);
 
-		pen += vertical * elem.FontSize * font.Layout.Metrics.Ascender;
+		pen += vertical * elem.FontSize * font.Layout.Metrics!.Ascender;
 
 		float fontMultiplier = elem.FontSize / 64;
 		Vector2 newLinePos = pen;
@@ -160,9 +164,9 @@ public static class TextRenderer {
 				}
 
 				if (!char.IsWhiteSpace(c)) {
-					float sampLeft = g.AtlasBounds.Left;
+					float sampLeft = g.AtlasBounds!.Left;
 					float sampRight = g.AtlasBounds.Right;
-					float sampTop = font.Layout.Atlas.Height - g.AtlasBounds.Top;
+					float sampTop = font.Layout.Atlas!.Height - g.AtlasBounds.Top;
 					float sampBottom = font.Layout.Atlas.Height - g.AtlasBounds.Bottom;
 					float originalGlyphHeight = sampBottom - sampTop;
 					float originalGlyphWidth = sampRight - sampLeft;
@@ -171,7 +175,7 @@ public static class TextRenderer {
 					float glyphWidth = originalGlyphWidth * fontMultiplier;
 					Vector2 originalGlyphSize = new Vector2(originalGlyphWidth, originalGlyphHeight);
 
-					float left = pen.X + (g.PlaneBounds.Left * elem.FontSize);
+					float left = pen.X + (g.PlaneBounds!.Left * elem.FontSize);
 					float bottom = pen.Y + (g.PlaneBounds.Bottom * elem.FontSize);
 					float right = left + glyphWidth;
 					float top = bottom + glyphHeight;
@@ -181,7 +185,7 @@ public static class TextRenderer {
 					Vector2 topLeft = bottomLeft - vertical * glyphHeight;
 					Vector2 topRight = topLeft + horizontal * glyphWidth;
 
-					elem.Verts[elem.VertexCount] = new VertexSDFText(
+					elem.Verts![elem.VertexCount] = new VertexSDFText(
 						new Vector3(topLeft, 0f),
 						elem.Foreground.TopLeft,
 						new Vector2(sampLeft, sampTop),
@@ -404,5 +408,5 @@ public struct VertexSDFText : IVertexType {
 		this.glyphSize = glyphSize;
 	}
 
-	VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
+	readonly VertexDeclaration IVertexType.VertexDeclaration { get { return VertexDeclaration; } }
 }

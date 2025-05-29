@@ -1,5 +1,6 @@
 using Engine.Objects;
 using Microsoft.Xna.Framework;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Engine;
 
@@ -51,6 +52,6 @@ public abstract class GameObject : IUpdatable, IDrawable {
 	public void Attach(Component cmp) => CmpHandler.Attach(cmp);
 	public void Detach<T>() where T : Component => CmpHandler.Detach<T>();
 	public T? GetComponent<T>() where T : Component => CmpHandler.GetComponent<T>();
-	public bool GetComponent<T>(out T? component) where T : Component => CmpHandler.GetComponent(out component);
+	public bool GetComponent<T>([NotNullWhen(true)] out T? component) where T : Component => CmpHandler.GetComponent(out component);
 	public bool HasComponent<T>() where T : Component => CmpHandler.HasComponent<T>();
 }

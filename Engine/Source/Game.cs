@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Engine;
@@ -35,6 +36,7 @@ public class Game : Microsoft.Xna.Framework.Game {
 	/// Whether the game is running in headless mode (without interacting with any graphics API)
 	/// </summary>
 	public bool IsHeadless { get; private init; }
+	[MemberNotNullWhen(true, nameof(Graphics)), MemberNotNullWhen(true, nameof(SpriteBatch)), MemberNotNullWhen(true, nameof(RenderTarget)), MemberNotNullWhen(true, nameof(Instance))]
 	public static bool CanDraw => Instance != null && !Instance.IsHeadless;
 
 	public static float RenderTargetScale {

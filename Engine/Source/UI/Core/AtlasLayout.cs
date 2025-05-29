@@ -4,19 +4,19 @@
 /// Objects needed for JSON deserialization
 /// </summary>
 public class AtlasLayout {
-	public Atlas Atlas { get; set; }
-	public Metrics Metrics { get; set; }
-	public Glyph[] Glyphs { get; set; }
-	public KerningPair[] Kerning { get; set; }
+	public Atlas? Atlas { get; set; }
+	public Metrics? Metrics { get; set; }
+	public Glyph[]? Glyphs { get; set; }
+	public KerningPair[]? Kerning { get; set; }
 }
 
 public class Atlas {
-	public string Type { get; set; }
+	public string Type { get; set; } = "";
 	public int DistanceRange { get; set; }
 	public int Size { get; set; }
 	public int Width { get; set; }
 	public int Height { get; set; }
-	public string YOrigin { get; set; }
+	public string YOrigin { get; set; } = "";
 }
 
 public class Metrics {
@@ -30,8 +30,8 @@ public class Metrics {
 public class Glyph {
 	public int Unicode { get; set; }
 	public float Advance { get; set; }
-	public PlaneBounds PlaneBounds { get; set; }
-	public AtlasBounds AtlasBounds { get; set; }
+	public PlaneBounds? PlaneBounds { get; set; }
+	public AtlasBounds? AtlasBounds { get; set; }
 }
 
 public class PlaneBounds {

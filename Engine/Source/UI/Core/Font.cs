@@ -35,12 +35,12 @@ public class Font {
 		using (StreamReader sr = new StreamReader("Content/" + src + ".json", Encoding.UTF8)) {
 			string full = sr.ReadToEnd();
 			JsonSerializerOptions options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-			Layout = JsonSerializer.Deserialize<AtlasLayout>(full, options);
+			Layout = JsonSerializer.Deserialize<AtlasLayout>(full, options)!;
 
-			foreach (Glyph g in Layout.Glyphs) {
+			foreach (Glyph g in Layout.Glyphs!) {
 				glyphs.Add((char)g.Unicode, g);
 			}
-			foreach (KerningPair pair in Layout.Kerning) {
+			foreach (KerningPair pair in Layout.Kerning!) {
 				kerningPairs.Add(((char)pair.Unicode1, (char)pair.Unicode2), pair.Advance);
 			}
 		}

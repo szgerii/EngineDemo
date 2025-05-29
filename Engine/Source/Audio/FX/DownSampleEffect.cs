@@ -13,8 +13,8 @@ public class DownSampleEffect : Effect {
 		BitDepth = LofiFilter.BITDEPTH
 	}
 
-	private LofiFilter lf;
-	public override SoloudObject EffectObject => lf;
+	private LofiFilter? lf;
+	public override SoloudObject? EffectObject => lf;
 	private float sampleRate;
 	/// <summary>
 	/// The sample rate of the downsampled audio, ranging from 100hz to 22000hz
@@ -91,7 +91,7 @@ public class DownSampleEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		lf.Dispose();
+		lf?.Dispose();
 		lf = null;
 	}
 

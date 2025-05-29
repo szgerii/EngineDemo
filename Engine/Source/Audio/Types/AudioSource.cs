@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Engine.Audio.Types;
 
@@ -58,6 +59,7 @@ public abstract class AudioSource {
 	/// </summary>
 	public string TargetBus {
 		get => targetBus;
+		[MemberNotNull(nameof(targetBus))]
 		set {
 			targetBus = value;
 			UpdateLiveBus();

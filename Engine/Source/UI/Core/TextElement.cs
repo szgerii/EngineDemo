@@ -18,9 +18,9 @@ public class TextElement : IDisposable {
 	public bool NeedsRedraw { get; set; } = true;
 	public bool Dynamic { get; private set; } = true;
 	private int currentLimit;
-	public VertexSDFText[] Verts { get; set; }
+	public VertexSDFText[]? Verts { get; set; }
 	public int VertexCount { get; set; }
-	public RenderTarget2D Output { get; private set; }
+	public RenderTarget2D? Output { get; private set; }
 
 	public TextElement(string text, string font, float fontSize, float width, AdvancedColor foreground, bool dynamic = true, TextAlign textAlign = TextAlign.Left, int glyphLimit = -1) {
 		this.text = text;
@@ -193,7 +193,7 @@ public class TextElement : IDisposable {
 	/// <summary>
 	/// The height of one line of text (in pixels) in this element
 	/// </summary>
-	public float LineHeight => TextRenderer.Fonts[font].Layout.Metrics.LineHeight * fontSize;
+	public float LineHeight => TextRenderer.Fonts[font].Layout.Metrics!.LineHeight * fontSize;
 
 	public void UpdateLines() {
 		lines = TextRenderer.CalculateLines(font, text, fontSize, width);
@@ -209,9 +209,9 @@ public class TextElement : IDisposable {
 	/// Resizes the output texture of this element if neccessary
 	/// </summary>
 	public void EnsureCorrectOutput() {
-		if (Output == null || Output.Width != width || Output.Height != cachedHeight) {
+		if (Game.CanDraw && (Output == null || Output.Width != width || Output.Height != cachedHeight)) {
 			Output = new RenderTarget2D(
-				Game.Graphics.GraphicsDevice,
+				Game.Graphics!.GraphicsDevice,
 				(int)Math.Ceiling(width),
 				(int)Math.Ceiling(cachedHeight)
 			);

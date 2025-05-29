@@ -44,7 +44,7 @@ public class SerialAudio : AudioSource, IPausableAudio, ISeekableAudio {
 	}
 	public double CurrentPosition => Playing ? AudioManager.Soloud.getStreamPosition(VoiceHandle) * 1000f : 0;
 	private string sourceFile;
-	private Wav wavObject;
+	private Wav? wavObject;
 	public uint VoiceHandle { get; private set; } = 0;
 
 	public SerialAudio(string name, string sourceFile, float volume = 1f, float pan = 0f, float playbackSpeed = 1f, bool looping = false, double startPosition = 0d, string targetBus = "master")
@@ -76,7 +76,7 @@ public class SerialAudio : AudioSource, IPausableAudio, ISeekableAudio {
 			return;
 		}
 		Stop();
-		wavObject.Dispose();
+		wavObject?.Dispose();
 		wavObject = null;
 		Length = TimeSpan.Zero;
 		Loaded = false;
@@ -92,7 +92,7 @@ public class SerialAudio : AudioSource, IPausableAudio, ISeekableAudio {
 			Load();
 		}
 
-		VoiceHandle = AudioManager.Buses[TargetBus].BusObject.play(wavObject, aVolume: Volume, aPan: Pan, aPaused: 1);
+		VoiceHandle = AudioManager.Buses[TargetBus].BusObject!.play(wavObject!, aVolume: Volume, aPan: Pan, aPaused: 1);
 		AssertHandle(VoiceHandle);
 		if (looping) {
 			AudioManager.Soloud.setLooping(VoiceHandle, 1);
@@ -137,7 +137,7 @@ public class SerialAudio : AudioSource, IPausableAudio, ISeekableAudio {
 
 	protected override void UpdateLiveBus() {
 		if (Playing) {
-			AudioManager.Buses[TargetBus].BusObject.annexSound(VoiceHandle);
+			AudioManager.Buses[TargetBus].BusObject!.annexSound(VoiceHandle);
 		}
 	}
 

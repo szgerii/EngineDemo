@@ -10,7 +10,7 @@ namespace Engine.Audio.Types;
 /// </summary>
 public class ParallelAudio : AudioSource {
 	private string sourceFile;
-	private Wav wavObject;
+	private Wav? wavObject;
 
 	public ParallelAudio(string name, string sourceFile, float volume = 1f, float pan = 0f, float playbackSpeed = 1f, double startPosition = 0d, string targetBus = "master")
 		: base(name, volume, pan, playbackSpeed, startPosition, targetBus) {
@@ -40,7 +40,7 @@ public class ParallelAudio : AudioSource {
 			return;
 		}
 		Stop();
-		wavObject.Dispose();
+		wavObject?.Dispose();
 		wavObject = null;
 		Length = TimeSpan.Zero;
 		Loaded = false;
@@ -54,7 +54,7 @@ public class ParallelAudio : AudioSource {
 			Load();
 		}
 		uint h = 0;
-		h = AudioManager.Buses[TargetBus].BusObject.play(wavObject, aVolume: volume, aPan: pan, aPaused: 1);
+		h = AudioManager.Buses[TargetBus].BusObject!.play(wavObject!, aVolume: volume, aPan: pan, aPaused: 1);
 		AssertHandle(h);
 		AudioManager.Soloud.setRelativePlaySpeed(h, playbackSpeed);
 		if (StartPosition != 0L) {
@@ -68,7 +68,7 @@ public class ParallelAudio : AudioSource {
 	/// </summary>
 	public override void Stop() {
 		if (Loaded) {
-			AudioManager.Soloud.stopAudioSource(wavObject);
+			AudioManager.Soloud.stopAudioSource(wavObject!);
 		}
 	}
 }

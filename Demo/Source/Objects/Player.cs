@@ -10,7 +10,7 @@ namespace Demo.Objects;
 
 public class Player : GameObject, IHasCenter {
 	public const int WALK_SPEED = 200;
-	public static Player Instance { get; private set; }
+	public static Player? Instance { get; private set; }
 
 	public Vector2 Center => Position + new Vector2(sprite.FrameWidth * 0.5f, sprite.FrameHeight * 0.5f);
 

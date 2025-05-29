@@ -20,8 +20,8 @@ public class FilterEffect : Effect {
 		BandPass = SoLoud.BiquadResonantFilter.BANDPASS
 	}
 
-	private SoLoud.BiquadResonantFilter brf;
-	public override SoloudObject EffectObject => brf;
+	private SoLoud.BiquadResonantFilter? brf;
+	public override SoloudObject? EffectObject => brf;
 	private FilterType type;
 	/// <summary>
 	/// The type of the filter (high pass, low pass or band pass)
@@ -113,7 +113,7 @@ public class FilterEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		brf.Dispose();
+		brf?.Dispose();
 		brf = null;
 	}
 

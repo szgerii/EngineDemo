@@ -3,7 +3,7 @@
 namespace Engine.Audio.FX;
 
 public abstract class Effect {
-	public abstract SoloudObject EffectObject { get; }
+	public abstract SoloudObject? EffectObject { get; }
 	public uint TargetHandle { get; set; } = 0;
 	public uint TargetId { get; set; } = 0;
 	public bool Active { get; set; } = false;

@@ -3,25 +3,23 @@ using Engine.Collision;
 using Microsoft.Xna.Framework;
 using System;
 using Engine.Debug;
-using Engine.UI;
-using Engine.UI.Core;
 using Engine.Helpers;
 using Engine.Objects;
 
 namespace Demo.Scenes;
 
 public class GameScene : Scene {
-	public static GameScene Active => SceneManager.Active as GameScene;
+	public static GameScene Active => (GameScene)SceneManager.Active!;
 
-	public Level CurrentLevel { get; private set; }
+	public Level? CurrentLevel { get; private set; }
 
 	static GameScene() {
-		DebugMode.AddFeature(new LoopedDebugFeature("draw-grid", (object _, GameTime _) => Active?.CurrentLevel.DrawGrid(), GameLoopStage.POST_DRAW));
+		DebugMode.AddFeature(new LoopedDebugFeature("draw-grid", (object? _, GameTime _) => Active?.CurrentLevel?.DrawGrid(), GameLoopStage.POST_DRAW));
 	}
 
 	public override void Unload() {
 		PostUpdate -= CollisionManager.PostUpdate;
-		RemoveObject(CurrentLevel);
+		RemoveObject(CurrentLevel!);
 		
 		base.Unload();
 	}
@@ -33,7 +31,7 @@ public class GameScene : Scene {
 		}
 
 		Camera.Active = new Camera(Vector2.Zero);
-		Camera.Active.Zoom = 1.5f;
+		Camera.Active.Zoom = 2f;
 		Game.AddObject(Camera.Active);
 
 		CurrentLevel = new Level(mapName);
@@ -43,7 +41,7 @@ public class GameScene : Scene {
 	}
 
 	private void InitMap() {
-		CollisionManager.Init(new Vectangle(0, 0, CurrentLevel.MapWidth * CurrentLevel.TileSize, CurrentLevel.MapHeight * CurrentLevel.TileSize));
+		CollisionManager.Init(new Vectangle(0, 0, CurrentLevel!.MapWidth * CurrentLevel.TileSize, CurrentLevel.MapHeight * CurrentLevel.TileSize));
 		PostUpdate += CollisionManager.PostUpdate;
 	}
 }

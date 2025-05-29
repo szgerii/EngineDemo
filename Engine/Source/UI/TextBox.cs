@@ -23,11 +23,11 @@ public struct Padding {
 
 public class TextBox : UIObject {
 	public TextElement TextElement { get; set; }
-	public BoxElement BoxElement { get; set; }
+	public BoxElement? BoxElement { get; set; }
 	public Color ForegroundColor { get; set; } = Color.White;
 	public Padding Padding { get; set; }
 
-	public TextBox(Vector2 pos, TextElement text, BoxElement box = null) : base(pos) {
+	public TextBox(Vector2 pos, TextElement text, BoxElement? box = null) : base(pos) {
 		TextElement = text;
 		BoxElement = box;
 	}
@@ -41,11 +41,13 @@ public class TextBox : UIObject {
 	}
 
 	public override void Draw(GameTime gameTime) {
+		if (!Game.CanDraw) return;
+		
 		// draw text
-		Game.SpriteBatch.Draw(
+		Game.SpriteBatch!.Draw(
 			TextElement.Output,
 			Position + new Vector2(Padding.Left, Padding.Top),
-			new Rectangle(0, 0, TextElement.Output.Width, TextElement.Output.Height),
+			new Rectangle(0, 0, TextElement.Output!.Width, TextElement.Output.Height),
 			ForegroundColor,
 			0,
 			Vector2.Zero,
@@ -62,7 +64,7 @@ public class TextBox : UIObject {
 		Game.SpriteBatch.Draw(
 			BoxElement.Output,
 			Position,
-			new Rectangle(0, 0, BoxElement.Output.Width, BoxElement.Output.Height),
+			new Rectangle(0, 0, BoxElement.Output!.Width, BoxElement.Output.Height),
 			Color.White,
 			0,
 			Vector2.Zero,

@@ -12,8 +12,8 @@ public class FreeverbEffect : Effect {
 		Width = FreeverbFilter.WIDTH
 	}
 
-	private FreeverbFilter ff;
-	public override SoloudObject EffectObject => ff;
+	private FreeverbFilter? ff;
+	public override SoloudObject? EffectObject => ff;
 	private float freeze;
 	/// <summary>
 	/// The freeze parameter of the effect
@@ -142,7 +142,7 @@ public class FreeverbEffect : Effect {
 
 	public override void Deactivate() {
 		base.Deactivate();
-		ff.Dispose();
+		ff?.Dispose();
 		ff = null;
 	}
 

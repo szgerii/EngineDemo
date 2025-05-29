@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace Engine.UI.Core;
 
 static class BoxRenderer {
-	private static Effect boxEffect;
-	private static DynamicVertexBuffer vbo;
-	private static IndexBuffer ibo;
+	private static Effect? boxEffect;
+	private static DynamicVertexBuffer? vbo;
+	private static IndexBuffer? ibo;
 	private static HashSet<BoxElement> elements = new HashSet<BoxElement>();
 	public static IReadOnlySet<BoxElement> Elements => elements;
 
@@ -16,6 +16,8 @@ static class BoxRenderer {
 	/// Call me in LoadContent() :point-right: :point-left:
 	/// </summary>
 	public static void Init(string effectPath) {
+		if (!Game.CanDraw) return;
+
 		boxEffect = Game.ContentManager.Load<Effect>(effectPath);
 		vbo = new DynamicVertexBuffer(
 			Game.Graphics.GraphicsDevice,
@@ -43,6 +45,8 @@ static class BoxRenderer {
 	/// Pretty please at the start of Game.Draw(), BEFORE spritebatch.Begin tyy ~.~
 	/// </summary>
 	public static void Render() {
+		if (!Game.CanDraw) return;
+
 		GraphicsDevice device = Game.Graphics.GraphicsDevice;
 		// bind ibo
 		device.Indices = ibo;
@@ -54,12 +58,12 @@ static class BoxRenderer {
 				// clear
 				device.Clear(Color.Transparent);
 				// vbo
-				vbo.SetData(elem.Verts, 0, 4);
+				vbo!.SetData(elem.Verts, 0, 4);
 				device.SetVertexBuffer(vbo);
 				// apply the shader (+size uniform)
 				float w = elem.Size.X;
 				float h = elem.Size.Y;
-				boxEffect.Parameters["ScreenSize"].SetValue(new Vector2(w, h));
+				boxEffect!.Parameters["ScreenSize"].SetValue(new Vector2(w, h));
 				boxEffect.CurrentTechnique.Passes[0].Apply();
 				// draw
 				device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);

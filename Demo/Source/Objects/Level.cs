@@ -22,24 +22,26 @@ public class Level : GameObject {
 	public int MapWidth { get; private set; }
 	public int MapHeight { get; private set; }
 
-	private List<(float layerDepth, Texture2D tex)> staticLayers;
-	private Texture2D debugGridTex;
+	private List<(float layerDepth, Texture2D tex)> staticLayers = [];
+	private ITexture2D? debugGridTex;
 
 	public Level(string mapName) : base(Vector2.Zero) {
 		MapName = mapName;
 	}
 
 	public void LoadLevel() {
+		if (!Game.CanDraw) return;
+
 		TiledMap map = new(Game.ContentManager.RootDirectory + "/assets/maps/" + MapName + ".tmx");
 		// maps the first gids of tilesets to the actual tileset data
 		Dictionary<int, TiledTileset> tilesets = map.GetTiledTilesets(Game.ContentManager.RootDirectory + "/assets/tilesets/");
 		TiledLayer[] tileLayers = map.Layers.Where(e => e.type == TiledLayerType.TileLayer).ToArray();
-		Dictionary<string, Color[]> rawTilesets = new();
+		Dictionary<string, Color[]> rawTilesets = [];
 
 		TileSize = map.TileWidth;
 		MapWidth = map.Width;
 		MapHeight = map.Height;
-		staticLayers = new List<(float, Texture2D)>();
+		staticLayers = [];
 
 		float layerDepth = 1;
 		for (int i = 0; i < tileLayers.Length; i++, layerDepth -= 0.01f) {
@@ -50,7 +52,7 @@ public class Level : GameObject {
 			if (staticLayer) {
 				layerColorData = new Color[layer.width * layer.height * TileSize * TileSize];
 			} else {
-				layerColorData = Array.Empty<Color>();
+				layerColorData = [];
 			}
 
 			for (int y = 0; y < layer.height; y++) {
@@ -66,17 +68,19 @@ public class Level : GameObject {
 					TiledMapTileset mapTileset = map.GetTiledMapTileset(gid);
 					TiledTileset tileset = tilesets[mapTileset.firstgid];
 					TiledSourceRect srcRect = map.GetSourceRect(mapTileset, tileset, gid);
+#pragma warning disable CA1854 // idk how VS thinks this can be replaced with a TryGetValue()
 					if (!rawTilesets.ContainsKey(tileset.Name)) {
 						Texture2D tilesetTex = Game.ContentManager.Load<Texture2D>("assets/tilesets/" + tileset.Name);
 						Color[] colorData = new Color[tilesetTex.Width * tilesetTex.Height];
 						tilesetTex.GetData(colorData);
 						rawTilesets[tileset.Name] = colorData;
 					}
+#pragma warning restore CA1854
 					Color[] tilesetColorData = rawTilesets[tileset.Name];
 
 					Color[] tileColorData;
 					if (staticLayer) {
-						tileColorData = Array.Empty<Color>();
+						tileColorData = [];
 					} else {
 						tileColorData = new Color[TileSize * TileSize];
 					}
@@ -123,7 +127,7 @@ public class Level : GameObject {
 
 						// destroyable
 						if (tile != null && tile.properties.Any(e => e.name == "destroyable" && e.value == "true")) {
-							HealthCmp healthCmp = new HealthCmp(3);
+							HealthCmp healthCmp = new(3);
 							tileObj.Attach(healthCmp);
 						}
 
@@ -143,7 +147,7 @@ public class Level : GameObject {
 		foreach (TiledLayer layer in objectLayers) {
 			foreach (TiledObject obj in layer.objects) {
 				if (obj.name == "player") {
-					Player player = new Player(new Vector2(obj.x, obj.y));
+					Player player = new(new Vector2(obj.x, obj.y));
 					Game.AddObject(player);
 
 					Rectangle maxBounds = Rectangle.Empty;
@@ -154,7 +158,7 @@ public class Level : GameObject {
 					}
 
 					CameraControllerCmp controller = new(maxBounds, player);
-					Camera.Active.Attach(controller);
+					Camera.Active!.Attach(controller);
 				}
 			}
 		}
@@ -164,19 +168,24 @@ public class Level : GameObject {
 
 	public override void Draw(GameTime gameTime) {
 		foreach ((float depth, Texture2D tex) in staticLayers) {
-			Game.SpriteBatch.Draw(tex, Vector2.Zero, tex.Bounds, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, depth);
+			Game.SpriteBatch!.Draw(tex, Vector2.Zero, tex.Bounds, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, depth);
         }
 
         base.Draw(gameTime);
 	}
 
 	public void DrawGrid() {
-		Game.SpriteBatch.Draw(debugGridTex, -Camera.Active.Position, debugGridTex.Bounds, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0.01f);
+		Game.SpriteBatch!.Draw(debugGridTex!.ToTexture2D(), -Camera.Active!.Position, debugGridTex!.Bounds, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0.01f);
 	}
 
 	private void GenerateDebugGrid() {
-		debugGridTex = new Texture2D(Game.Graphics.GraphicsDevice, MapWidth * TileSize, MapHeight * TileSize);
-		Color[] colorData = new Color[debugGridTex.Width * debugGridTex.Height];
+		if (!Game.CanDraw) {
+			debugGridTex = new NoopTexture2D(null, MapWidth * TileSize, MapHeight * TileSize);
+			return;
+		}
+
+		Texture2D texBuffer = new(Game.Graphics.GraphicsDevice, MapWidth * TileSize, MapHeight * TileSize);
+		Color[] colorData = new Color[texBuffer.Width * texBuffer.Height];
 
 		for (int y = 0; y < MapHeight * TileSize; y++) {
 			for (int x = 0; x < MapWidth * TileSize; x++) {
@@ -191,6 +200,7 @@ public class Level : GameObject {
 			}
 		}
 
-		debugGridTex.SetData(colorData);
+		texBuffer.SetData(colorData);
+		debugGridTex = new Texture2DAdapter(texBuffer);
 	}
 }

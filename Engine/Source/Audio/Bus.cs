@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Engine.Audio;
 
@@ -85,7 +86,7 @@ public class Bus {
 	/// The effects of this audio bus
 	/// </summary>
 	public Effects Effects { get; set; } = new Effects();
-	private string targetBus;
+	private string? targetBus;
 	/// <summary>
 	/// The bus, into which this bus will be routed to.
 	/// Changing this value while an instance is playing will have no effect
@@ -93,16 +94,16 @@ public class Bus {
 	/// A null value means that this audio source won't play through a bus, so
 	/// only the settings and effects of the AudioManager itself will affect it.
 	/// </summary>
-	public string TargetBus {
+	public string? TargetBus {
 		get => targetBus;
 		set {
 			targetBus = value;
 		}
 	}
 	public uint BusHandle { get; private set; } = 0;
-	public SoLoud.Bus BusObject { get; private set; }
+	public SoLoud.Bus? BusObject { get; private set; }
 
-	public Bus(string name, float volume = 1.0f, float pan = 0.0f, string targetBus = "master") {
+	public Bus(string name, float volume = 1.0f, float pan = 0.0f, string? targetBus = "master") {
 		Name = name;
 		Volume = volume;
 		Pan = pan;
@@ -117,14 +118,14 @@ public class Bus {
 	public void Init() {
 		Stop();
 		if (TargetBus == null) {
-			BusHandle = AudioManager.Soloud.play(BusObject);
+			BusHandle = AudioManager.Soloud.play(BusObject!);
 		} else {
-			BusHandle = AudioManager.Buses[TargetBus].BusObject.play(BusObject);
+			BusHandle = AudioManager.Buses[TargetBus].BusObject!.play(BusObject!);
 		}
 
 		AudioManager.Soloud.setVolume(BusHandle, Volume);
 		AudioManager.Soloud.setPan(BusHandle, pan);
-		Effects.Activate(BusObject, BusHandle);
+		Effects.Activate(BusObject!, BusHandle);
 		Running = true;
 	}
 
@@ -143,6 +144,7 @@ public class Bus {
 	/// <summary>
 	/// Loads the audio bus
 	/// </summary>
+	[MemberNotNull(nameof(BusObject))]
 	public void Load() {
 		Stop();
 		BusObject = new SoLoud.Bus();
@@ -154,7 +156,7 @@ public class Bus {
 	/// </summary>
 	public void Unload() {
 		Stop();
-		BusObject.Dispose();
+		BusObject?.Dispose();
 		BusObject = null;
 		Loaded = false;
 	}

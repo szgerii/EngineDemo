@@ -22,7 +22,7 @@ public class TileMap : GameObject {
 	}
 
 	public override void Draw(GameTime gameTime) {
-		float startX = Camera.Active.Position.X % CellSize;
+		float startX = Camera.Active!.Position.X % CellSize;
 		float startY = Camera.Active.Position.Y % CellSize;
 
 		for (float x = -startX; x < Camera.Active.ScreenWidth; x += CellSize) {
@@ -35,7 +35,7 @@ public class TileMap : GameObject {
 				}
 				Texture2D tex = Textures[Map[tilePos.X, tilePos.Y]];
 
-				Game.SpriteBatch.Draw(tex, new Vector2(x, y), new Rectangle(0, 0, CellSize, CellSize), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+				Game.SpriteBatch!.Draw(tex, new Vector2(x, y), new Rectangle(0, 0, CellSize, CellSize), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
 			}
 		}
 	}
