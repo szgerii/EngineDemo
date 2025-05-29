@@ -8,7 +8,7 @@ Although the engine is far from production-ready it can be used as a starting po
 
 ## Current State
 
-The engine was used for a semester-long uni assignment and although it performed surprisingly well both in the development and stability departments, its components faced multiple changes, reworks and expansions. The new version has been more or less been ported over to work with the old demo, but some rough edges still need to be straightened out (namely the debug mode and UI systems).
+The engine was used for a semester-long uni assignment and although it performed surprisingly well both in the development and stability departments, its components faced multiple changes, reworks and expansions. The new version has more or less been ported over to work with the old demo, but some rough edges still need to be straightened out (namely the debug mode and UI systems).
 
 The commit history also doesn't represent the development process of the engine, as it has gone through several repository changes (unfortunately without the commit history being handled appropriately).
 
