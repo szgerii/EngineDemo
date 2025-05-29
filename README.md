@@ -28,7 +28,7 @@ The engine currently supports the following features:
   - animated sprites (with or without multiple directions)
 - Collision system
   - AABB only (for now, see [Planned features](#planned-features))
-  - can handle large number of well-distributed entities thanks to quadtree optimization (though its specific parameters might have to be adjusted for each use case)
+  - can handle large numbers of (relatively well-distributed) entities thanks to quadtree optimization (though its specific parameters might have to be adjusted for each use case)
 - Audio (soloud, Windows-only)
   - bus system
   - audio effects
