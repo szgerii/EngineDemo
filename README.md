@@ -67,4 +67,4 @@ For now, the engine has no standalone documentation, but most of the public API'
 ## Contributors
 
 - [szgerii](https://github.com/szgerii/ "szgerii GitHub Profilja")
-- [Bandi1234](https://github.com/Bandi1234 "Bandi1234 GitHub Profilja")
+- [ZeleAnd](https://github.com/ZeleAnd/ "ZeleAnd GitHub Profilja")
